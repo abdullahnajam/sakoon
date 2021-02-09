@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/h/Downloads/Project/sakoon/sakoon/lib/data/routes.dart';
+import 'package:sakoon/data/routes.dart';
 import 'package:sakoon/screens/sign_in/sign_in_screen.dart';
 import 'package:sakoon/screens/splash/splash_screen.dart';
-import 'file:///C:/Users/h/Downloads/Project/sakoon/sakoon/lib/data/size_config.dart';
-import 'file:///C:/Users/h/Downloads/Project/sakoon/sakoon/lib/data/theme.dart';
+import 'package:sakoon/data/size_config.dart';
+import 'package:sakoon/data/theme.dart';
 
 void main() {
   runApp(MyApp());

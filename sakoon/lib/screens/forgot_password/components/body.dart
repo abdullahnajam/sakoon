@@ -3,7 +3,7 @@ import 'package:sakoon/components/custom_surfix_icon.dart';
 import 'package:sakoon/components/default_button.dart';
 import 'package:sakoon/components/form_error.dart';
 import 'package:sakoon/components/no_account_text.dart';
-import 'file:///C:/Users/h/Downloads/Project/sakoon/sakoon/lib/data/size_config.dart';
+import 'package:sakoon/data/size_config.dart';
 
 import '../../../data/constants.dart';
 

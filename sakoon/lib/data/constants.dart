@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/h/Downloads/Project/sakoon/sakoon/lib/data/size_config.dart';
+import 'package:sakoon/data/size_config.dart';
 
 const kPrimaryColor = Color(0xFFFF7643);
 const kPrimaryLightColor = Color(0xFFFFECDF);

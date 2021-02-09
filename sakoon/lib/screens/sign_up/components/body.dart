@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sakoon/components/socal_card.dart';
-import 'file:///C:/Users/h/Downloads/Project/sakoon/sakoon/lib/data/constants.dart';
-import 'file:///C:/Users/h/Downloads/Project/sakoon/sakoon/lib/data/size_config.dart';
+import 'package:sakoon/data/constants.dart';
+import 'package:sakoon/data/size_config.dart';
 
 import 'sign_up_form.dart';
 

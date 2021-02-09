@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/h/Downloads/Project/sakoon/sakoon/lib/data/constants.dart';
+import 'package:sakoon/data/constants.dart';
 import 'package:sakoon/screens/sign_in/sign_in_screen.dart';
-import 'file:///C:/Users/h/Downloads/Project/sakoon/sakoon/lib/data/size_config.dart';
+import 'package:sakoon/data/size_config.dart';
 
 // This is the best practice
 import '../components/splash_content.dart';

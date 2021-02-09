@@ -7,29 +7,20 @@ class HomePage extends StatefulWidget {
 @override
 _HomePageState createState() => new _HomePageState();
 }
-
-
 class _HomePageState extends State<HomePage> {
   PageController _controller = PageController(
     initialPage: 0,
   );
-
-
   @override
   void initState() {
     super.initState();
 
   }
-
-
-
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,8 +130,6 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               )
-
-
             ],
           ),
         );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/h/Downloads/Project/sakoon/sakoon/lib/data/constants.dart';
-import 'file:///C:/Users/h/Downloads/Project/sakoon/sakoon/lib/data/size_config.dart';
+import 'package:sakoon/data/constants.dart';
+import 'package:sakoon/data/size_config.dart';
 
 import 'complete_profile_form.dart';
 
