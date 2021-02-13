@@ -52,6 +52,8 @@ class _BottomNavigationBarControllerState extends State<Home> {
           icon: Icon(Icons.work), title: Text('Project')),
       BottomNavigationBarItem(
           icon: Icon(Icons.person), title: Text('About')),
+      BottomNavigationBarItem(
+          icon: Icon(Icons.person), title: Text('Partners')),
 
     ],
   );
