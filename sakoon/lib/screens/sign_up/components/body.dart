@@ -38,7 +38,7 @@ class Body extends StatelessWidget {
                       press: () {},
                     ),
                     SocalCard(
-                      icon: "assets/icons/twitter.svg",
+                      icon: 'assets/images/facebook.png',
                       press: () {},
                     ),
                   ],

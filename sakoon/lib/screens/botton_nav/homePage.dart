@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sakoon/components/default_button.dart';
+import 'package:sakoon/screens/home_nav/home_maintance.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -116,7 +117,7 @@ class _HomePageState extends State<HomePage> {
                     DefaultButton(
                       text: "Maintaince",
                       press: () {
-
+                        Navigator.pushNamed(context, HomeMaintanance.routeName);
                       },
                     ),
                     SizedBox(height: 30,),
