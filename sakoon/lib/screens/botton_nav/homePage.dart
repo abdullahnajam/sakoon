@@ -31,11 +31,11 @@ class _HomePageState extends State<HomePage> {
           child: ListView(
             children: <Widget>[
               Container(
-                height: 250,
+                height: 350,
                 child: Stack(
                   children: <Widget>[
                     Container(
-                      height: 225,
+                      height: 275,
                       child: PageView.builder(
                         itemBuilder: (context, position) {
                           return Container(
@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
                               decoration: new BoxDecoration(
                                   image: new DecorationImage(
                                       fit: BoxFit.fill,
-                                      image: NetworkImage("http://i.imgur.com/HmjQ2tj.jpg")
+                                      image: NetworkImage("https://a10.gaanacdn.com/images/playlists/76/1166276/crop_480x480_1166276_1488540423.jpg")
                                   )
                               ),
                               width: MediaQuery
@@ -53,15 +53,15 @@ class _HomePageState extends State<HomePage> {
                                   .width,
 
                               child: Align(
-                                  alignment: Alignment.bottomLeft,
+                                  alignment: Alignment.bottomCenter,
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: <Widget>[
-                                      Text('    Ad title here',
+                                      Text('',
                                         textAlign: TextAlign.start,
                                         style: TextStyle(color: Colors.black,
-                                            fontSize: 27,
+                                            fontSize: 50,
                                             fontWeight: FontWeight.w600),),
 
                                     ],
@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
 
                     Card(
 
-                      margin: EdgeInsets.only(top: 200, left: 20, right: 20),
+                      margin: EdgeInsets.only(top: 300, left: 35, right: 35),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius
                           .circular(25),),
                       clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -124,7 +124,6 @@ class _HomePageState extends State<HomePage> {
                     DefaultButton(
                       text: "Home Appliances",
                       press: () {
-
                       },
                     ),
                     SizedBox(height: 30,),

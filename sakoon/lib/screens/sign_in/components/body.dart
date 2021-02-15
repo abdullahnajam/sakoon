@@ -36,15 +36,15 @@ class Body extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SocalCard(
-                      icon: "assets/icons/google-icon.svg",
+                      icon: "assets/images/google.png",
                       press: () {},
                     ),
                     SocalCard(
-                      icon: "assets/icons/facebook-2.svg",
+                      icon: "assets/images/facebook.png",
                       press: () {},
                     ),
                     SocalCard(
-                      icon: "assets/icons/twitter.svg",
+                      icon: "assets/images/tiwtter.png",
                       press: () {},
                     ),
                   ],
