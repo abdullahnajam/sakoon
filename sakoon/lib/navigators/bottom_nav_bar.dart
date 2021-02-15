@@ -19,6 +19,9 @@ class _BottomNavigationBarControllerState extends State<Home> {
     super.initState();
     pages = [
       HomePage(),
+      Center(child: Text("Projects"),),
+      Center(child: Text("About"),),
+      Center(child: Text("Partners"),),
 
     ];
   }
@@ -53,7 +56,7 @@ class _BottomNavigationBarControllerState extends State<Home> {
       BottomNavigationBarItem(
           icon: Icon(Icons.person), title: Text('About')),
       BottomNavigationBarItem(
-          icon: Icon(Icons.person), title: Text('Partners')),
+          icon: Icon(Icons.people), title: Text('Partners')),
 
     ],
   );

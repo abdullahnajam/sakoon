@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
 
                     Card(
 
-                      margin: EdgeInsets.only(top: 300, left: 35, right: 35),
+                      margin: EdgeInsets.only(top: 250, left: 35, right: 35),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius
                           .circular(25),),
                       clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -100,7 +100,7 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              SizedBox(height: 30,),
+              //SizedBox(height: 20,),
               Container(
                 margin: EdgeInsets.all(30),
                 child: Column(
