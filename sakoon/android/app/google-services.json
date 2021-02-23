@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1000174164852",
+    "project_id": "sakoon-3904a",
+    "storage_bucket": "sakoon-3904a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1000174164852:android:ec8da5ba5976f7b16e6a21",
+        "android_client_info": {
+          "package_name": "com.app.sakoon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1000174164852-f07fbqk1k1ilt016cugebjhanv5se5a6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJW7hGQAOB8SKiYz1zdoG2lhk-DZCutC8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1000174164852-f07fbqk1k1ilt016cugebjhanv5se5a6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

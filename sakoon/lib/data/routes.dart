@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:sakoon/navigators/bottom_nav_bar.dart';
+import 'package:sakoon/screens/botton_nav/homePage.dart';
 import 'package:sakoon/screens/complete_profile/complete_profile_screen.dart';
 import 'package:sakoon/screens/forgot_password/forgot_password_screen.dart';
 import 'package:sakoon/screens/home/home_screen.dart';
@@ -21,4 +22,5 @@ final Map<String, WidgetBuilder> routes = {
   CompleteProfileScreen.routeName: (context) => CompleteProfileScreen(),
   HomeScreen.routeName: (context) => Home(),
   HomeMaintanance.routeName: (context) => HomeMaintanance(),
+  HomePage.routename: (context) => HomePage(),
 };

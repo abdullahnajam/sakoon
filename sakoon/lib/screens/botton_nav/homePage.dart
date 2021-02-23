@@ -4,7 +4,7 @@ import 'package:sakoon/components/default_button.dart';
 import 'package:sakoon/screens/home_nav/home_maintance.dart';
 
 class HomePage extends StatefulWidget {
-
+static String routename='/homepage';
 @override
 _HomePageState createState() => new _HomePageState();
 }
@@ -67,7 +67,6 @@ class _HomePageState extends State<HomePage> {
                                     ],
                                   )
                               )
-
                           );
                         },
                         itemCount: 3, // Can be null

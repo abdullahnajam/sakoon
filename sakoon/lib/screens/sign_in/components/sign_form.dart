@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:sakoon/components/custom_surfix_icon.dart';
 import 'package:sakoon/components/form_error.dart';
 import 'package:sakoon/helper/keyboard.dart';
 import 'package:sakoon/screens/forgot_password/forgot_password_screen.dart';
 import 'package:sakoon/screens/login_success/login_success_screen.dart';
-
 import '../../../components/default_button.dart';
 import '../../../data/constants.dart';
 import '../../../data/size_config.dart';
@@ -15,6 +13,7 @@ class SignForm extends StatefulWidget {
 }
 
 class _SignFormState extends State<SignForm> {
+
   final _formKey = GlobalKey<FormState>();
   String email;
   String password;
@@ -114,7 +113,6 @@ class _SignFormState extends State<SignForm> {
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Lock.svg"),
       ),
     );
   }
@@ -147,7 +145,6 @@ class _SignFormState extends State<SignForm> {
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Mail.svg"),
       ),
     );
   }

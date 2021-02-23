@@ -22,7 +22,6 @@ class _BottomNavigationBarControllerState extends State<Home> {
       Center(child: Text("Projects"),),
       Center(child: Text("About"),),
       Center(child: Text("Partners"),),
-
     ];
   }
 
@@ -52,12 +51,11 @@ class _BottomNavigationBarControllerState extends State<Home> {
       BottomNavigationBarItem(
           icon: Icon(Icons.home), title: Text('Home')),
       BottomNavigationBarItem(
-          icon: Icon(Icons.work), title: Text('Project')),
+          icon: Icon(Icons.work), title: Text('Projects')),
       BottomNavigationBarItem(
           icon: Icon(Icons.person), title: Text('About')),
       BottomNavigationBarItem(
-          icon: Icon(Icons.people), title: Text('Partners')),
-
+          icon: Icon(Icons.account_circle), title: Text('Profile')),
     ],
   );
 
@@ -70,7 +68,6 @@ class _BottomNavigationBarControllerState extends State<Home> {
         child: pages[_selectedIndex],
         bucket: bucket,
       ),
-
     );
   }
 }
