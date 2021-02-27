@@ -114,7 +114,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(height: 30,),
                     DefaultButton(
-                      text: "Maintaince",
+                      text: "Maintenance",
                       press: () {
                         Navigator.pushNamed(context,HomeMaintanance.routeName);
                       },

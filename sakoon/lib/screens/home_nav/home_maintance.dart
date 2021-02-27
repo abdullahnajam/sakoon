@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sakoon/components/default_button.dart';
 import 'package:sakoon/data/constants.dart';
+import 'package:sakoon/navigators/bottom_nav_bar.dart';
 import 'package:sakoon/screens/home/home_screen.dart';
+import 'package:geolocator/geolocator.dart';
 class HomeMaintanance extends StatefulWidget {
   static String routeName = "/home_maintainance";
   @override
@@ -10,10 +12,41 @@ class HomeMaintanance extends StatefulWidget {
 }
 
 class _HomeMaintananceState extends State<HomeMaintanance> {
+  Position _currentPosition;
+  String _currentAddress;
+  final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
   bool _isWoodChecked=false;
   bool _isAluminiumChecked=false;
   bool _isGlassChecked=false;
   bool _isPlasterChecked=false;
+  _getCurrentLocation() {
+    geolocator
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
+        .then((Position position) {
+      setState(() {
+        _currentPosition = position;
+        print(_currentAddress);
+      });
+      _getAddressFromLatLng();
+    }).catchError((e) {
+      print(e);
+    });
+  }
+  _getAddressFromLatLng() async {
+    try {
+      List<Placemark> p = await geolocator.placemarkFromCoordinates(
+          _currentPosition.latitude, _currentPosition.longitude);
+
+      Placemark place = p[0];
+
+      setState(() {
+        _currentAddress =
+        "${place.locality}, ${place.postalCode}, ${place.country}";
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
   @override
   Widget build(BuildContext context) {
 
@@ -29,6 +62,14 @@ class _HomeMaintananceState extends State<HomeMaintanance> {
                 child: Text("Please select the work",textAlign: TextAlign.center,style: TextStyle(color: kPrimaryColor,fontSize: 25,fontWeight: FontWeight.w600)),
               ),
             ),
+       SingleChildScrollView(
+        child: ListBody(
+          children: <Widget>[
+            Text('This is a demo alert dialog.'),
+            Text('Would you like to approve of this message?'),
+          ],
+        ),
+      ),
             Expanded(
               flex: 8,
               child: ListView(
@@ -85,6 +126,8 @@ class _HomeMaintananceState extends State<HomeMaintanance> {
                 child: DefaultButton(
                   text: "Submit",
                   press: () {
+                    _getCurrentLocation();
+                    Navigator.of(context).pop();
                     Navigator.pushNamed(context, HomeScreen.routeName);
                   },
                 ),
