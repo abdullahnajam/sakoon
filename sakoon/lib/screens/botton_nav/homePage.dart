@@ -31,11 +31,11 @@ class _HomePageState extends State<HomePage> {
           child: ListView(
             children: <Widget>[
               Container(
-                height: 350,
+                height: 375,
                 child: Stack(
                   children: <Widget>[
                     Container(
-                      height: 275,
+                      height: 325,
                       child: PageView.builder(
                         itemBuilder: (context, position) {
                           return Container(
@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
                               decoration: new BoxDecoration(
                                   image: new DecorationImage(
                                       fit: BoxFit.fill,
-                                      image: NetworkImage("https://a10.gaanacdn.com/images/playlists/76/1166276/crop_480x480_1166276_1488540423.jpg")
+                                      image: AssetImage('assets/images/sukoon.jpeg'),
                                   )
                               ),
                               width: MediaQuery
@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
 
                     Card(
 
-                      margin: EdgeInsets.only(top: 250, left: 35, right: 35),
+                      margin: EdgeInsets.only(top: 300, left: 25, right: 25),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius
                           .circular(25),),
                       clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -101,7 +101,7 @@ class _HomePageState extends State<HomePage> {
               ),
               //SizedBox(height: 20,),
               Container(
-                margin: EdgeInsets.all(30),
+                margin: EdgeInsets.all(25),
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -109,23 +109,23 @@ class _HomePageState extends State<HomePage> {
                     DefaultButton(
                       text: "Fresh Work",
                       press: () {
-
+                        Navigator.pushNamed(context,HomeMaintanance.routeName);
                       },
                     ),
-                    SizedBox(height: 30,),
+                    SizedBox(height: 50,),
                     DefaultButton(
                       text: "Maintenance",
                       press: () {
                         Navigator.pushNamed(context,HomeMaintanance.routeName);
                       },
                     ),
-                    SizedBox(height: 30,),
+                    SizedBox(height: 50,),
                     DefaultButton(
                       text: "Home Appliances",
                       press: () {
                       },
                     ),
-                    SizedBox(height: 30,),
+                    SizedBox(height: 50,),
                   ],
                 ),
               )

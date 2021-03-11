@@ -19,6 +19,15 @@ class _HomeMaintananceState extends State<HomeMaintanance> {
   bool _isAluminiumChecked=false;
   bool _isGlassChecked=false;
   bool _isPlasterChecked=false;
+  bool _isStructureChecked=false;
+  bool _isElectricworkChecked=false;
+  bool _isMarbleChecked=false;
+  bool _isACChecked=false;
+  bool _isSolarChecked=false;
+  bool _isSteelChecked=false;
+  bool _isSupplyChecked=false;
+  bool _isPlumbingChecked=false;
+  bool _isPaintChecked=false;
   _getCurrentLocation() {
     geolocator
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
@@ -49,7 +58,6 @@ class _HomeMaintananceState extends State<HomeMaintanance> {
   }
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -62,26 +70,128 @@ class _HomeMaintananceState extends State<HomeMaintanance> {
                 child: Text("Please select the work",textAlign: TextAlign.center,style: TextStyle(color: kPrimaryColor,fontSize: 25,fontWeight: FontWeight.w600)),
               ),
             ),
-       SingleChildScrollView(
-        child: ListBody(
-          children: <Widget>[
-            Text('This is a demo alert dialog.'),
-            Text('Would you like to approve of this message?'),
-          ],
-        ),
-      ),
             Expanded(
               flex: 8,
               child: ListView(
                 children: [
 
                   CheckboxListTile(
-                      title: Text("Wood"),
+                      title: Text("Supply"),
+                      value: _isSupplyChecked,
+                      activeColor: kPrimaryColor,
+                      onChanged: (bool value){
+                        setState(() {
+                          _isSupplyChecked=value;
+                        });
+                      }
+                  ),
+                  CheckboxListTile(
+                      title: Text("Structure"),
+                      value: _isStructureChecked,
+                      activeColor: kPrimaryColor,
+                      onChanged: (bool value){
+                        setState(() {
+                          _isStructureChecked=value;
+                        });
+                      }
+                  ),
+                  CheckboxListTile(
+                      title: Text("Electric Work"),
+                      value: _isElectricworkChecked,
+                      activeColor: kPrimaryColor,
+                      onChanged: (bool value){
+                        setState(() {
+                          _isAluminiumChecked=value;
+                        });
+                      }
+                  ),
+                  CheckboxListTile(
+                      title: Text("Marbles and Tiles"),
+                      value: _isMarbleChecked,
+                      activeColor: kPrimaryColor,
+                      onChanged: (bool value){
+                        setState(() {
+                          _isMarbleChecked=value;
+                        });
+                      }
+                  ),
+                  CheckboxListTile(
+                      title: Text("Plumbing Work"),
+                      value: _isPlumbingChecked,
+                      activeColor: kPrimaryColor,
+                      onChanged: (bool value){
+                        setState(() {
+                          _isPlumbingChecked=value;
+                        });
+                      }
+                  ),
+                  CheckboxListTile(
+                      title: Text("Aluminium Alloy and uPVC"),
+                      value: _isAluminiumChecked,
+                      activeColor: kPrimaryColor,
+                      onChanged: (bool value){
+                        setState(() {
+                          _isAluminiumChecked=value;
+                        });
+                      }
+                  ),
+                  CheckboxListTile(
+                      title: Text("AC and Geysers"),
+                      value: _isACChecked,
+                      activeColor: kPrimaryColor,
+                      onChanged: (bool value){
+                        setState(() {
+                          _isACChecked=value;
+                        });
+                      }
+                  ),
+                  CheckboxListTile(
+                      title: Text("Paint"),
+                      value: _isPaintChecked,
+                      activeColor: kPrimaryColor,
+                      onChanged: (bool value){
+                        setState(() {
+                          _isPaintChecked=value;
+                        });
+                      }
+                  ),
+                  CheckboxListTile(
+                      title: Text("Solar Panels"),
+                      value: _isSolarChecked,
+                      activeColor: kPrimaryColor,
+                      onChanged: (bool value){
+                        setState(() {
+                          _isSolarChecked=value;
+                        });
+                      }
+                  ),
+                  CheckboxListTile(
+                      title: Text("Stainless Steel and Mild Steel"),
+                      value: _isSteelChecked,
+                      activeColor: kPrimaryColor,
+                      onChanged: (bool value){
+                        setState(() {
+                          _isSteelChecked=value;
+                        });
+                      }
+                  ),
+                  CheckboxListTile(
+                      title: Text("Wood Work"),
                       value: _isWoodChecked,
                       activeColor: kPrimaryColor,
                       onChanged: (bool value){
                         setState(() {
                           _isWoodChecked=value;
+                        });
+                      }
+                  ),
+                  CheckboxListTile(
+                      title: Text("Glass Work"),
+                      value: _isGlassChecked,
+                      activeColor: kPrimaryColor,
+                      onChanged: (bool value){
+                        setState(() {
+                          _isGlassChecked=value;
                         });
                       }
                   ),
@@ -95,27 +205,6 @@ class _HomeMaintananceState extends State<HomeMaintanance> {
                         });
                       }
                   ),
-                  CheckboxListTile(
-                      title: Text("Aluminium"),
-                      value: _isAluminiumChecked,
-                      activeColor: kPrimaryColor,
-                      onChanged: (bool value){
-                        setState(() {
-                          _isAluminiumChecked=value;
-                        });
-                      }
-                  ),
-                  CheckboxListTile(
-                      title: Text("Glass"),
-                      value: _isGlassChecked,
-                      activeColor: kPrimaryColor,
-                      onChanged: (bool value){
-                        setState(() {
-                          _isGlassChecked=value;
-                        });
-                      }
-                  ),
-
                 ],
               ),
             ),

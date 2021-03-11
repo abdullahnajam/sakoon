@@ -24,7 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-
+  google_maps_flutter: ^0.5.11
   firebase_auth:
   google_sign_in: ^4.4.4
   cupertino_icons: ^1.0.0
