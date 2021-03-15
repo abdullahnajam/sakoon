@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sakoon/components/default_button.dart';
 import 'package:sakoon/data/constants.dart';
-import 'package:sakoon/navigators/bottom_nav_bar.dart';
 import 'package:sakoon/screens/home/home_screen.dart';
 import 'package:geolocator/geolocator.dart';
 class HomeMaintanance extends StatefulWidget {
@@ -74,7 +73,6 @@ class _HomeMaintananceState extends State<HomeMaintanance> {
               flex: 8,
               child: ListView(
                 children: [
-
                   CheckboxListTile(
                       title: Text("Supply"),
                       value: _isSupplyChecked,
