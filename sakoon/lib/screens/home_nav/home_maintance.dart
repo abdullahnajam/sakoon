@@ -9,7 +9,6 @@ class HomeMaintanance extends StatefulWidget {
   @override
   _HomeMaintananceState createState() => _HomeMaintananceState();
 }
-
 class _HomeMaintananceState extends State<HomeMaintanance> {
   Position _currentPosition;
   String _currentAddress;
@@ -224,7 +223,6 @@ class _HomeMaintananceState extends State<HomeMaintanance> {
           ],
         ),
       )
-
     );
   }
 }
