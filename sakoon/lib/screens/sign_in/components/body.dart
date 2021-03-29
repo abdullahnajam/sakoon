@@ -6,10 +6,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
-import 'package:sakoon/auth_block.dart';
 import 'package:sakoon/components/no_account_text.dart';
 import 'package:sakoon/components/socal_card.dart';
 import 'package:sakoon/screens/botton_nav/homePage.dart';
+import 'package:sakoon/screens/complete_profile.dart';
 import '../../../data/size_config.dart';
 import 'sign_form.dart';
 import 'dart:async';
@@ -87,6 +87,7 @@ class _BodyState extends State<Body> {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
+  FirebaseUser user;
 
   Future<String> signInWithGoogle() async {
     final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
@@ -99,7 +100,7 @@ class _BodyState extends State<Body> {
     );
 
     final AuthResult authResult = await _auth.signInWithCredential(credential);
-    final FirebaseUser user = authResult.user;
+    user = authResult.user;
     assert(!user.isAnonymous);
     assert(await user.getIdToken() != null);
     final FirebaseUser currentUser = await _auth.currentUser();
@@ -128,7 +129,7 @@ class _BodyState extends State<Body> {
 */
   @override
   Widget build(BuildContext context) {
-    var authbloc=Provider.of<AuthBlock>(context);
+   // var authbloc=Provider.of<AuthBlock>(context);
     return SafeArea(
       child: SizedBox(
         width: double.infinity,
@@ -164,7 +165,7 @@ class _BodyState extends State<Body> {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) {
-                                return HomePage();
+                                return SetUserInfo(user.uid);
                               },
                             ),
                           );

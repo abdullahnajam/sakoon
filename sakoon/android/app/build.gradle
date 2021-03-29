@@ -63,5 +63,4 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
     implementation 'com.google.firebase:firebase-auth'}
     apply plugin: 'com.google.gms.google-services'
-    id 'com.google.secrets_gradle_plugin' version '0.5'
 
