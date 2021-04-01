@@ -35,13 +35,13 @@ class _SetUserInfoState extends State<SetUserInfo> {
                 Container(
                   margin: EdgeInsets.only(top: 20,left: 20),
                   child: Text(
-                    'Create Account',
+                    ' Complete Profile',
                     style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
                   ),
                 ),
                 Container(
                   margin: EdgeInsets.only(top: 15,left: 20),
-                  child: Text("Email Address",style: TextStyle(fontWeight: FontWeight.w700,fontSize: 13),),
+                  child: Text("  Phone Number",style: TextStyle(fontWeight: FontWeight.w700,fontSize: 13),),
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 20,right: 20),
@@ -64,7 +64,7 @@ class _SetUserInfoState extends State<SetUserInfo> {
                 SizedBox(height: 20,),
                 Container(
                   margin: EdgeInsets.only(top: 15,left: 20),
-                  child: Text("Given Name",style: TextStyle(fontWeight: FontWeight.w700,fontSize: 13),),
+                  child: Text("Address",style: TextStyle(fontWeight: FontWeight.w700,fontSize: 13),),
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 20,right: 20),
@@ -113,7 +113,7 @@ class _SetUserInfoState extends State<SetUserInfo> {
                         }*/
                       },
                       color: kPrimaryColor,
-                      child: Text("CONFIRM",style: TextStyle(color:Colors.white,fontWeight: FontWeight.w400,fontSize: 18)),
+                      child: Text("CONFIRM",style: TextStyle(color:Colors.white,fontWeight: FontWeight.w500,fontSize: 18)),
                     ),
                   ),
                   alignment: Alignment.center,

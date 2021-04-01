@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:sakoon/components/socal_card.dart';
 import 'package:sakoon/data/constants.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sakoon/data/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -8,6 +11,7 @@ import 'package:sakoon/screens/botton_nav/homePage.dart';
 import 'sign_up_form.dart';
 
 class Body extends StatelessWidget {
+  static final FacebookLogin facebookSignIn = new FacebookLogin();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
   Future<String> signInWithGoogle() async {
@@ -37,6 +41,43 @@ class Body extends StatelessWidget {
     await googleSignIn.signOut();
 
     print("User Sign Out");
+  }
+  Future<Null> _login() async {
+    final FacebookLoginResult result =
+    await facebookSignIn.logInWithReadPermissions(['email']);
+
+    switch (result.status) {
+      case FacebookLoginStatus.loggedIn:
+        final FacebookAccessToken accessToken = result.accessToken;
+        print('''
+         Logged in!
+         
+         Token: ${accessToken.token}
+         User id: ${accessToken.userId}
+         Expires: ${accessToken.expires}
+         Permissions: ${accessToken.permissions}
+         Declined permissions: ${accessToken.declinedPermissions}
+         ''');
+        break;
+      case FacebookLoginStatus.cancelledByUser:
+        print('Login cancelled by the user.');
+        break;
+      case FacebookLoginStatus.error:
+        print('Something went wrong with the login process.\n'
+            'Here\'s the error Facebook gave us: ${result.errorMessage}');
+        break;
+    }
+  }
+  Future<FirebaseUser> signInWithFacebook() async {
+    print("here");
+    // Trigger the sign-in flow
+    final FirebaseAuth _fAuth = FirebaseAuth.instance;
+    final FacebookLoginResult facebookLoginResult = await facebookSignIn.logInWithReadPermissions(['email']);
+    FacebookAccessToken facebookAccessToken = facebookLoginResult.accessToken;
+    AuthCredential authCredential = FacebookAuthProvider.getCredential(accessToken: facebookAccessToken.token);
+    FirebaseUser fbUser;
+    fbUser = (await _fAuth.signInWithCredential(authCredential)).user;
+    //Token: ${accessToken.token}
   }
   @override
   Widget build(BuildContext context) {
@@ -77,7 +118,7 @@ class Body extends StatelessWidget {
                     ),
                     SocalCard(
                       icon: 'assets/images/facebook.png',
-                      press: () {},
+                      press: signInWithFacebook,
                     ),
                   ],
                 ),

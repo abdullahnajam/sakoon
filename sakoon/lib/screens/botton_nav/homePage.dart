@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
                               decoration: new BoxDecoration(
                                   image: new DecorationImage(
                                       fit: BoxFit.fill,
-                                      image: AssetImage('assets/images/sukoon.jpeg'),
+                                      image: AssetImage('assets/images/logo.png'),
                                   )
                               ),
                               width: MediaQuery
