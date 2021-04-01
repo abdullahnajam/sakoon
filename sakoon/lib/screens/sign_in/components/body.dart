@@ -105,6 +105,7 @@ class _BodyState extends State<Body> {
     assert(await user.getIdToken() != null);
     final FirebaseUser currentUser = await _auth.currentUser();
     assert(user.uid == currentUser.uid);
+    print(user.uid);
 
     return 'signInWithGoogle succeeded: $user';
   }
@@ -161,14 +162,21 @@ class _BodyState extends State<Body> {
                     SocalCard(
                       icon: "assets/images/google.png",
                       press: () {
-                        signInWithGoogle().whenComplete(() {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return SetUserInfo(user.uid);
-                              },
-                            ),
-                          );
+                        signInWithGoogle().whenComplete(() async {
+                          FirebaseUser fuser=await FirebaseAuth.instance.currentUser();
+                          if(fuser.uid!=null){
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return SetUserInfo(fuser.uid);
+                                },
+                              ),
+                            );
+                          }
+                          else{
+                            print("fuser is null");
+                          }
+
                         });
                       },
                     ),

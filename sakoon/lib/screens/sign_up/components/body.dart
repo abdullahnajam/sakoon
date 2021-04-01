@@ -28,6 +28,7 @@ class Body extends StatelessWidget {
 
     final FirebaseUser currentUser = await _auth.currentUser();
     assert(user.uid == currentUser.uid);
+    print(user.uid);
 
     return 'signInWithGoogle succeeded: $user';
   }
