@@ -5,8 +5,10 @@ import 'package:sakoon/screens/sign_in/sign_in_screen.dart';
 import 'package:sakoon/screens/splash/splash_screen.dart';
 import 'package:sakoon/data/size_config.dart';
 import 'package:sakoon/data/theme.dart';
-
-void main() {
+import 'package:firebase_core/firebase_core.dart';
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -16,6 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return MaterialApp(
+
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: theme(),

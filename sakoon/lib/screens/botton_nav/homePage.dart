@@ -1,6 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sakoon/components/default_button.dart';
+import 'package:sakoon/model/services.dart';
 import 'package:sakoon/screens/home_nav/home_maintance.dart';
 
 class HomePage extends StatefulWidget {
@@ -9,6 +12,44 @@ static String routename='/homepage';
 _HomePageState createState() => new _HomePageState();
 }
 class _HomePageState extends State<HomePage> {
+  PageController _controller = PageController(
+    initialPage: 0,
+  );
+  @override
+  void initState() {
+    super.initState();
+
+  }
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  final databaseReference = FirebaseDatabase.instance.reference();
+
+  Future<List<Service>> getServices() async {
+    List<Service> list=new List();
+    await databaseReference.child("services").once().then((DataSnapshot dataSnapshot){
+
+      var KEYS= dataSnapshot.value.keys;
+      var DATA=dataSnapshot.value;
+
+      for(var individualKey in KEYS){
+        Service service = new Service(
+            individualKey,
+            DATA[individualKey]['name'],
+            DATA[individualKey]['image']
+        );
+        print("key ${service.id}");
+        list.add(service);
+
+
+
+      }
+    });
+    return list;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +65,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               Container(
                 padding: EdgeInsets.all(10),
-                height: MediaQuery.of(context).size.height*0.3,
+                height: MediaQuery.of(context).size.height*0.28,
                 decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.centerRight,
@@ -90,7 +131,7 @@ class _HomePageState extends State<HomePage> {
                   padding: EdgeInsets.only(left: 15,right: 15),
                   height: 40,
                   width: 120,
-                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.27,right: 10),
+                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.25,right: 10),
                   child: Row(
                     children: [
                       Icon(Icons.search,color: Colors.white,),
@@ -108,26 +149,81 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           Container(
-            height: MediaQuery.of(context).size.height*0.7,
-            child: GridView.count(
-                shrinkWrap: true,
-                crossAxisCount: 2,
-                crossAxisSpacing: 1.0,
-                mainAxisSpacing: 1.0,
-                children: List.generate(2, (index) {
-                  return Center(
-                    child: Container(
-                      color: Colors.white,
-                      child: Column(
-                        children: [
-                          Image.asset('assets/images/logo.png',width: 80,height: 80,),
-                          Text("Title",style: TextStyle(color: Colors.black,fontSize: 18,fontWeight: FontWeight.w500),)
-                        ],
+            padding: EdgeInsets.only(top: 10,bottom: 10),
+            height: MediaQuery.of(context).size.height*0.25,
+            child: PageView.builder(
+                itemCount: 5,
+                itemBuilder: (context, position){
+                  return Image.asset("assets/images/logo.png");
+                }
+            ),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height*0.45,
+            child: FutureBuilder<List<Service>>(
+              future: getServices(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  if (snapshot.data != null) {
+                    return ListView.builder(
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (BuildContext context,int index){
+                        return Container(
+                          margin: EdgeInsets.all(10),
+                          padding: EdgeInsets.only(left: 20,right: 20,top: 20,bottom: 20),
+                          decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.centerRight,
+                                end: Alignment.centerLeft,
+                                colors: [
+                                  Color(0xff6db0f2),
+                                  Color(0xff498fd5),
+
+                                ],
+                              ),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Stack(
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: CachedNetworkImage(
+                                  imageUrl: snapshot.data[index].imgUrl,
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.cover,
+                                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                                      CircularProgressIndicator(),
+                                  errorWidget: (context, url, error) => Icon(Icons.error),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.center,
+                                child:  Text(snapshot.data[index].name,textAlign: TextAlign.center,style: TextStyle(fontSize: 20,color: Colors.black,fontWeight: FontWeight.w400),),
+                              )
+
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  }
+                  else {
+                    return new Center(
+                      child: Container(
+                        child: Text("No Data Found"),
                       ),
-                    ),
+                    );
+                  }
+                }
+                else if (snapshot.hasError) {
+                  return Text('Error : ${snapshot.error}');
+                } else {
+                  return new Center(
+                    child: CircularProgressIndicator(),
                   );
                 }
-                )
+              },
             ),
           )
    

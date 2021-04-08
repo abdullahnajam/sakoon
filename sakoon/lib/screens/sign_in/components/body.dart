@@ -99,11 +99,10 @@ class _BodyState extends State<Body> {
       idToken: googleSignInAuthentication.idToken,
     );
 
-    final AuthResult authResult = await _auth.signInWithCredential(credential);
-    user = authResult.user;
+    final User user = (await _auth.signInWithCredential(credential)).user;
     assert(!user.isAnonymous);
     assert(await user.getIdToken() != null);
-    final FirebaseUser currentUser = await _auth.currentUser();
+    final User currentUser = await _auth.currentUser;
     assert(user.uid == currentUser.uid);
     print(user.uid);
 
@@ -163,7 +162,7 @@ class _BodyState extends State<Body> {
                       icon: "assets/images/google.png",
                       press: () {
                         signInWithGoogle().whenComplete(() async {
-                          FirebaseUser fuser=await FirebaseAuth.instance.currentUser();
+                          User fuser=await FirebaseAuth.instance.currentUser;
                           if(fuser.uid!=null){
                             Navigator.of(context).push(
                               MaterialPageRoute(

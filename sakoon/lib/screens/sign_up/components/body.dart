@@ -24,13 +24,13 @@ class Body extends StatelessWidget {
       idToken: googleSignInAuthentication.idToken,
     );
 
-    final AuthResult authResult = await _auth.signInWithCredential(credential);
-    final FirebaseUser user = authResult.user;
+    final User user =( await _auth.signInWithCredential(credential)).user;
+
 
     assert(!user.isAnonymous);
     assert(await user.getIdToken() != null);
 
-    final FirebaseUser currentUser = await _auth.currentUser();
+    final User currentUser = await _auth.currentUser;
     assert(user.uid == currentUser.uid);
     print(user.uid);
 
@@ -74,7 +74,7 @@ class Body extends StatelessWidget {
     final FirebaseAuth _fAuth = FirebaseAuth.instance;
     final FacebookLoginResult facebookLoginResult = await facebookSignIn.logInWithReadPermissions(['email']);
     FacebookAccessToken facebookAccessToken = facebookLoginResult.accessToken;
-    AuthCredential authCredential = FacebookAuthProvider.getCredential(accessToken: facebookAccessToken.token);
+    AuthCredential authCredential = FacebookAuthProvider.credential(facebookAccessToken.token);//accessToken: facebookAccessToken.token);
     FirebaseUser fbUser;
     fbUser = (await _fAuth.signInWithCredential(authCredential)).user;
     //Token: ${accessToken.token}
