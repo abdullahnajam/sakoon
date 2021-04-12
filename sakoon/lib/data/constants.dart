@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sakoon/data/size_config.dart';
 
 const kPrimaryColor = Color(0xFFFF7643);
+const kGoogleApiKey = "AIzaSyBhCef5WuAuPKRVoPuWQASD6avTs16x7uE";
 const kPrimaryLightColor = Color(0xFFFFECDF);
 const kPrimaryLightColors = Color(0xFFFFECEF);
 const kPrimaryGradientColor = LinearGradient(
