@@ -8,6 +8,7 @@ import 'package:sakoon/data/constants.dart';
 import 'package:sakoon/model/services.dart';
 import 'package:sakoon/navigators/menu_drawer.dart';
 import 'package:sakoon/screens/home_nav/home_maintance.dart';
+import 'package:sakoon/screens/services_list.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HomePage extends StatefulWidget {
@@ -100,7 +101,10 @@ class _HomePageState extends State<HomePage> {
                           padding:EdgeInsets.all(10),
                           child: Row(
                             children: [
-                              Image.asset('assets/images/menu.png',width: 25,height: 25,),
+                              GestureDetector(
+                                onTap: _openDrawer,
+                                child: Image.asset('assets/images/menu.png',width: 25,height: 25,),
+                              ),
                               SizedBox(width: 10,),
                               Text("Hi, Username",style: TextStyle(color: Colors.white,fontSize: 16),)
                             ],
@@ -243,25 +247,31 @@ class _HomePageState extends State<HomePage> {
                       //scrollDirection: Axis.horizontal,
                       itemCount: snapshot.data.length,
                       itemBuilder: (BuildContext context,int index){
-                        return Container(
-                          margin: EdgeInsets.only(left: 10,right: 10,bottom: 10),
-                          padding: EdgeInsets.all(0),
-                          decoration: BoxDecoration(
+                        return GestureDetector(
+                          onTap: (){
+                            Navigator.pushReplacement(
+                                context, MaterialPageRoute(builder: (BuildContext context) => ServicesCheckList(snapshot.data[index])));
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(left: 10,right: 10,bottom: 10),
+                            padding: EdgeInsets.all(0),
+                            decoration: BoxDecoration(
                               color: Color(0xfff4f6f5),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: ListTile(
-                            leading: CachedNetworkImage(
-                              imageUrl: snapshot.data[index].imgUrl,
-                              width: 30,
-                              height: 30,
-                              fit: BoxFit.cover,
-                              progressIndicatorBuilder: (context, url, downloadProgress) =>
-                                  CircularProgressIndicator(),
-                              errorWidget: (context, url, error) => Icon(Icons.error),
+                              borderRadius: BorderRadius.circular(20),
                             ),
-                            title: Text(snapshot.data[index].name,style: TextStyle(fontSize: 18,color: Colors.black,fontWeight: FontWeight.w400),),
-                            subtitle: Text('10 services'),
+                            child: ListTile(
+                              leading: CachedNetworkImage(
+                                imageUrl: snapshot.data[index].imgUrl,
+                                width: 30,
+                                height: 30,
+                                fit: BoxFit.cover,
+                                progressIndicatorBuilder: (context, url, downloadProgress) =>
+                                    CircularProgressIndicator(),
+                                errorWidget: (context, url, error) => Icon(Icons.error),
+                              ),
+                              title: Text(snapshot.data[index].name,style: TextStyle(fontSize: 18,color: Colors.black,fontWeight: FontWeight.w400),),
+                              subtitle: Text('10 services'),
+                            ),
                           ),
                         );
                       },

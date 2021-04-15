@@ -17,26 +17,27 @@ class _MenuDrawerState extends State<MenuDrawer> {
         child: Column(
           children: <Widget>[
             Container(
+              padding: EdgeInsets.all(10),
               height: 200,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('assets/images/background.jpg'),
+                      fit: BoxFit.cover
+                  )
+              ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(height: 30),
-                 /* CircleAvatar(
-                    radius: 32,
-                    backgroundColor: Colors.grey,
-                    child: CircleAvatar(
-                      radius: 30,
-                      backgroundImage: AssetImage(Img.get("photo_male_6.jpg")),
-                    ),
-                  ),*/
+                  //Image.asset('assets/images/background.jpg'),
                   Container(height: 7),
                   Text("My Name", style: MyText.body2(context).copyWith(
-                      color: Colors.blueGrey[800], fontWeight: FontWeight.w500
+                      color: Colors.black, fontWeight: FontWeight.w500
                   )),
                   Container(height: 2),
                   Text("email@mail.com", style: MyText.caption(context).copyWith(
-                      color: Colors.grey, fontWeight: FontWeight.w500
+                      color: Colors.black, fontWeight: FontWeight.w500
                   ))
                 ],
               ),
