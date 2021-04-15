@@ -7,8 +7,7 @@ import 'package:sakoon/screens/home/home_screen.dart';
 import 'package:sakoon/screens/home_nav/home_maintance.dart';
 import 'package:sakoon/screens/login_success/login_success_screen.dart';
 import 'package:sakoon/screens/sign_in/sign_in_screen.dart';
-import 'package:sakoon/screens/splash/splash_screen.dart';
-
+import 'package:sakoon/screens/splash/splash.dart';
 import '../screens/sign_up/sign_up_screen.dart';
 
 // We use name route

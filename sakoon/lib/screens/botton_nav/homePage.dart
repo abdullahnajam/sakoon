@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,9 +23,19 @@ class _HomePageState extends State<HomePage> {
   PageController controller = PageController(
     initialPage: 0,
   );
+  String username="username";
+  User user=null;
+  getUser() async{
+    user=await FirebaseAuth.instance.currentUser;
+    print(jsonEncode(user));
+    setState(() {
+      username=user.uid;
+    });
+  }
   @override
   void initState() {
     super.initState();
+
 
   }
   final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
@@ -106,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                                 child: Image.asset('assets/images/menu.png',width: 25,height: 25,),
                               ),
                               SizedBox(width: 10,),
-                              Text("Hi, Username",style: TextStyle(color: Colors.white,fontSize: 16),)
+                              Text("Hi, ${username}",style: TextStyle(color: Colors.white,fontSize: 16),)
                             ],
                           )
 
@@ -178,7 +191,7 @@ class _HomePageState extends State<HomePage> {
               Align(
                 child: Container(
                   padding: EdgeInsets.only(left: 15,right: 15),
-                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.35,right: 10),
+                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.35),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[

@@ -116,14 +116,14 @@ class _ServicesCheckListState extends State<ServicesCheckList> {
                     centerTitle: true,
                     title: !isShrink
                         ? Text("", style: TextStyle(color: Colors.white, fontSize: 16.0,))
-                        : Text("Service Name", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14, color: Colors.black),),
+                        : Text(widget._service.name, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14, color: Colors.black),),
                     background: Container(
                         child: Container(
                           margin: EdgeInsets.only(top: 100, left: 15),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("serviceName",
+                              Text(widget._service.name,
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 22,
