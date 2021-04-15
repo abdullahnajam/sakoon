@@ -6,6 +6,7 @@ import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:sakoon/components/default_button.dart';
 import 'package:sakoon/data/constants.dart';
 import 'package:sakoon/model/services.dart';
+import 'package:sakoon/navigators/menu_drawer.dart';
 import 'package:sakoon/screens/home_nav/home_maintance.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -22,6 +23,11 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
+  }
+  final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
+
+  void _openDrawer () {
+    _drawerKey.currentState.openDrawer();
   }
   @override
   void dispose() {
@@ -59,6 +65,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _drawerKey,
+      drawer: MenuDrawer(),
       body: Column(
         children: [
           Stack(
