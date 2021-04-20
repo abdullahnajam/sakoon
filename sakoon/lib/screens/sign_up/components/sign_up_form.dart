@@ -68,7 +68,7 @@ class _SignUpFormState extends State<SignUpForm> {
                       } else {
                         print('User is signed in!');
                         Navigator.pushReplacement(
-                            context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+                            context, MaterialPageRoute(builder: (BuildContext context) => CompleteProfileScreen()));
                       }
                     });
                   });

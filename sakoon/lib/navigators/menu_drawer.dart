@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:sakoon/data/my_text.dart';
 import 'package:sakoon/screens/about.dart';
 import 'package:sakoon/screens/botton_nav/homePage.dart';
+import 'package:sakoon/screens/complete_profile/complete_profile_screen.dart';
 import 'package:sakoon/screens/partners.dart';
 import 'package:sakoon/screens/sign_in/sign_in_screen.dart';
 class MenuDrawer extends StatefulWidget {
@@ -89,7 +90,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
             Container(height: 10),
             InkWell(onTap: (){
               Navigator.pushReplacement(
-                  context, MaterialPageRoute(builder: (BuildContext context) => Partners()));
+                  context, MaterialPageRoute(builder: (BuildContext context) => CompleteProfileScreen()));
             },
               child: Container(height: 40, padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Row(

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sakoon/data/constants.dart';
 import 'package:sakoon/data/size_config.dart';
@@ -6,34 +7,43 @@ import 'complete_profile_form.dart';
 class Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: SizedBox(
-        width: double.infinity,
-        child: Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
+    return Stack(
+      children: [
+        Container(
+          child: Row(
+            children: [
+              Text("Complete Profile",style: TextStyle(color: Colors.white,fontSize: 20,fontWeight: FontWeight.w600),)
+            ],
+          ),
+          margin: EdgeInsets.only(top: 50,left: 20),
+        ),
+        Container(
+          margin: EdgeInsets.only(top: 120),
+          height: double.maxFinite,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(25),
+                  topRight: Radius.circular(25)
+              )
+          ),
+          padding: EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
           child: SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: SizeConfig.screenHeight * 0.03),
-                Text("Complete Profile", style: headingStyle),
-                Text(
-                  "Complete your details or continue  \nwith social media",
-                  textAlign: TextAlign.center,
-                ),
+                Text("Fill the details", style: headingStyle),
+                Text("Complete your personal information", textAlign: TextAlign.center,),
                 SizedBox(height: SizeConfig.screenHeight * 0.06),
                 CompleteProfileForm(),
                 SizedBox(height: getProportionateScreenHeight(30)),
-                Text(
-                  "By continuing your confirm that you agree \nwith our Term and Condition",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.caption,
-                ),
+
               ],
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 }

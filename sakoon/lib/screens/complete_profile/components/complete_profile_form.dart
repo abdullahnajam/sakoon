@@ -1,13 +1,19 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:sakoon/components/custom_surfix_icon.dart';
 import 'package:sakoon/components/default_button.dart';
 import 'package:sakoon/components/form_error.dart';
+import 'package:sakoon/screens/botton_nav/homePage.dart';
 import 'package:sakoon/screens/home/home_screen.dart';
 
 import '../../../data/constants.dart';
 import '../../../data/size_config.dart';
 
 class CompleteProfileForm extends StatefulWidget {
+
+
   @override
   _CompleteProfileFormState createState() => _CompleteProfileFormState();
 }
@@ -19,6 +25,10 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
   String lastName;
   String phoneNumber;
   String address;
+  var addressController=TextEditingController();
+  var fnController=TextEditingController();
+  var lnController=TextEditingController();
+  var pnController=TextEditingController();
 
   void addError({String error}) {
     if (!errors.contains(error))
@@ -32,6 +42,37 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
       setState(() {
         errors.remove(error);
       });
+  }
+
+  saveInfo(){
+    final scaffold = Scaffold.of(context);
+    User user=FirebaseAuth.instance.currentUser;
+    print(phoneNumber);
+    final databaseReference = FirebaseDatabase.instance.reference();
+    databaseReference.child("user").child(user.uid).set({
+      'address': addressController.text,
+      'email': user.email,
+      'firstName': fnController.text,
+      'lastName': lnController.text,
+      'phoneNumber': pnController.text,
+    }).then((value) {
+      scaffold.showSnackBar(
+        SnackBar(
+          content: const Text('Profile Updated'),
+        ),
+      );
+      Navigator.pushReplacement(context, new MaterialPageRoute(
+          builder: (context) => HomePage()));
+    })
+        .catchError((error, stackTrace) {
+      print("inner: $error");
+      // although `throw SecondError()` has the same effect.
+      return scaffold.showSnackBar(
+        SnackBar(
+          content: Text('Error : $error'),
+        ),
+      );
+    });
   }
 
   @override
@@ -48,12 +89,13 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
           SizedBox(height: getProportionateScreenHeight(30)),
           buildAddressFormField(),
           FormError(errors: errors),
-          SizedBox(height: getProportionateScreenHeight(40)),
+          SizedBox(height: getProportionateScreenHeight(60)),
           DefaultButton(
             text: "continue",
             press: () {
               if (_formKey.currentState.validate()) {
-                Navigator.pushNamed(context, HomeScreen.routeName);
+                //FocusScope.of(context).unfocus();
+                saveInfo();
               }
             },
           ),
@@ -64,6 +106,19 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
 
   TextFormField buildAddressFormField() {
     return TextFormField(
+      readOnly: true,
+      onTap: () async {
+        LocationResult result = await showLocationPicker(
+          context,
+          kGoogleApiKey,
+        );
+        if(result!=null){
+          setState(() {
+            addressController.text=result.address;
+          });
+        }
+      },
+      controller: addressController,
       onSaved: (newValue) => address = newValue,
       onChanged: (value) {
         if (value.isNotEmpty) {
@@ -79,19 +134,41 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
         return null;
       },
       decoration: InputDecoration(
-        labelText: "Address",
-        hintText: "Enter your phone address",
+        contentPadding: EdgeInsets.all(15),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+            color: Colors.transparent,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+              color: Colors.transparent,
+              width: 0.5
+          ),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+            color: Colors.transparent,
+            width: 0.5,
+          ),
+        ),
+        filled: true,
+        prefixIcon: Icon(Icons.place_outlined,color: Colors.black,size: 22,),
+        fillColor: Colors.grey[200],
+        hintText: "Enter your address",
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon:
-            CustomSurffixIcon(svgIcon: "assets/icons/Location point.svg"),
       ),
     );
   }
 
   TextFormField buildPhoneNumberFormField() {
     return TextFormField(
+      controller: pnController,
       keyboardType: TextInputType.phone,
       onSaved: (newValue) => phoneNumber = newValue,
       onChanged: (value) {
@@ -108,32 +185,78 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
         return null;
       },
       decoration: InputDecoration(
-        labelText: "Phone Number",
+        contentPadding: EdgeInsets.all(15),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+            color: Colors.transparent,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+              color: Colors.transparent,
+              width: 0.5
+          ),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+            color: Colors.transparent,
+            width: 0.5,
+          ),
+        ),
+        filled: true,
+        prefixIcon: Icon(Icons.phone_outlined,color: Colors.black,size: 22,),
+        fillColor: Colors.grey[200],
         hintText: "Enter your phone number",
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Phone.svg"),
       ),
     );
   }
 
   TextFormField buildLastNameFormField() {
     return TextFormField(
+      controller: lnController,
       onSaved: (newValue) => lastName = newValue,
       decoration: InputDecoration(
-        labelText: "Last Name",
+        contentPadding: EdgeInsets.all(15),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+            color: Colors.transparent,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+              color: Colors.transparent,
+              width: 0.5
+          ),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+            color: Colors.transparent,
+            width: 0.5,
+          ),
+        ),
+        filled: true,
+        prefixIcon: Icon(Icons.person_outline_outlined,color: Colors.black,size: 22,),
+        fillColor: Colors.grey[200],
         hintText: "Enter your last name",
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/User.svg"),
       ),
     );
   }
 
   TextFormField buildFirstNameFormField() {
     return TextFormField(
+      controller: fnController,
       onSaved: (newValue) => firstName = newValue,
       onChanged: (value) {
         if (value.isNotEmpty) {
@@ -149,12 +272,34 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
         return null;
       },
       decoration: InputDecoration(
-        labelText: "First Name",
+        contentPadding: EdgeInsets.all(15),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+            color: Colors.transparent,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+              color: Colors.transparent,
+              width: 0.5
+          ),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+            color: Colors.transparent,
+            width: 0.5,
+          ),
+        ),
+        filled: true,
+        prefixIcon: Icon(Icons.person_outlined,color: Colors.black,size: 22,),
+        fillColor: Colors.grey[200],
         hintText: "Enter your first name",
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/User.svg"),
       ),
     );
   }
