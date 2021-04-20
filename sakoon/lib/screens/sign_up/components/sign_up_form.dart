@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sakoon/components/custom_surfix_icon.dart';
 import 'package:sakoon/components/default_button.dart';
 import 'package:sakoon/components/form_error.dart';
+import 'package:sakoon/screens/botton_nav/homePage.dart';
 import 'package:sakoon/screens/complete_profile/complete_profile_screen.dart';
 
 import '../../../data/constants.dart';
@@ -49,11 +51,37 @@ class _SignUpFormState extends State<SignUpForm> {
           SizedBox(height: getProportionateScreenHeight(40)),
           DefaultButton(
             text: "Continue",
-            press: () {
+            press: () async{
               if (_formKey.currentState.validate()) {
                 _formKey.currentState.save();
                 // if all are valid then go to success screen
-                Navigator.pushNamed(context, CompleteProfileScreen.routeName);
+                try {
+                  UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                      email: email,
+                      password: password
+                  ).whenComplete(() {
+                    FirebaseAuth.instance
+                        .authStateChanges()
+                        .listen((User user) {
+                      if (user == null) {
+                        print('User is currently signed out!');
+                      } else {
+                        print('User is signed in!');
+                        Navigator.pushReplacement(
+                            context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+                      }
+                    });
+                  });
+                } on FirebaseAuthException catch (e) {
+                  if (e.code == 'weak-password') {
+                    print('The password provided is too weak.');
+                  } else if (e.code == 'email-already-in-use') {
+                    print('The account already exists for that email.');
+                  }
+                } catch (e) {
+                  print(e);
+                }
+                //Navigator.pushNamed(context, CompleteProfileScreen.routeName);
               }
             },
           ),

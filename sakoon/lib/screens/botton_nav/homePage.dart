@@ -262,7 +262,7 @@ class _HomePageState extends State<HomePage> {
                       itemBuilder: (BuildContext context,int index){
                         return GestureDetector(
                           onTap: (){
-                            Navigator.pushReplacement(
+                            Navigator.push(
                                 context, MaterialPageRoute(builder: (BuildContext context) => ServicesCheckList(snapshot.data[index])));
                           },
                           child: Container(

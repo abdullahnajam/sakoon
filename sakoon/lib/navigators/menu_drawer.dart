@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sakoon/data/my_text.dart';
 import 'package:sakoon/screens/about.dart';
 import 'package:sakoon/screens/botton_nav/homePage.dart';
 import 'package:sakoon/screens/partners.dart';
+import 'package:sakoon/screens/sign_in/sign_in_screen.dart';
 class MenuDrawer extends StatefulWidget {
   @override
   _MenuDrawerState createState() => _MenuDrawerState();
@@ -100,7 +102,12 @@ class _MenuDrawerState extends State<MenuDrawer> {
               ),
             ),
             Container(height: 10),
-            InkWell(onTap: (){},
+            InkWell(onTap: () async{
+              await FirebaseAuth.instance.signOut().whenComplete((){
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (BuildContext context) => SignInScreen()));
+              });
+            },
               child: Container(height: 40, padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   children: <Widget>[
