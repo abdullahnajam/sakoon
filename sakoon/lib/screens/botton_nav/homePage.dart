@@ -24,10 +24,10 @@ class _HomePageState extends State<HomePage> {
     initialPage: 0,
   );
   String username="username";
-  User user=null;
+
   getUser() async{
-    user=await FirebaseAuth.instance.currentUser;
-    print(jsonEncode(user));
+    User user= FirebaseAuth.instance.currentUser;
+    print("user id ${user.uid}");
     setState(() {
       username=user.uid;
     });
@@ -35,6 +35,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    getUser();
 
 
   }
@@ -119,7 +120,7 @@ class _HomePageState extends State<HomePage> {
                                 child: Image.asset('assets/images/menu.png',width: 25,height: 25,),
                               ),
                               SizedBox(width: 10,),
-                              Text("Hi, ${username}",style: TextStyle(color: Colors.white,fontSize: 16),)
+                              Text("Hi, $username",style: TextStyle(color: Colors.white,fontSize: 16),)
                             ],
                           )
 

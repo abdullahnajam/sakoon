@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sakoon/data/constants.dart';
 
 import '../../data/size_config.dart';
 import 'components/body.dart';
@@ -9,9 +10,7 @@ class SignUpScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Sign Up"),
-      ),
+      backgroundColor: kPrimaryColor,
       body: Body(),
     );
   }

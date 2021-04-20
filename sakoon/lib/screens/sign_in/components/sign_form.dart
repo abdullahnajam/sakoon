@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sakoon/components/form_error.dart';
 import 'package:sakoon/helper/keyboard.dart';
+import 'package:sakoon/screens/botton_nav/homePage.dart';
 import 'package:sakoon/screens/forgot_password/forgot_password_screen.dart';
 import 'package:sakoon/screens/login_success/login_success_screen.dart';
 import '../../../components/default_button.dart';
@@ -40,43 +42,60 @@ class _SignFormState extends State<SignForm> {
       key: _formKey,
       child: Column(
         children: [
+          SizedBox(height: getProportionateScreenHeight(20)),
           buildEmailFormField(),
-          SizedBox(height: getProportionateScreenHeight(30)),
+          SizedBox(height: getProportionateScreenHeight(20)),
           buildPasswordFormField(),
           SizedBox(height: getProportionateScreenHeight(30)),
           Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Checkbox(
-                value: remember,
-                activeColor: kPrimaryColor,
-                onChanged: (value) {
-                  setState(() {
-                    remember = value;
-                  });
-                },
-              ),
-              Text("Remember me"),
-              Spacer(),
+
               GestureDetector(
                 onTap: () => Navigator.pushNamed(
                     context, ForgotPasswordScreen.routeName),
                 child: Text(
                   "Forgot Password",
-                  style: TextStyle(decoration: TextDecoration.underline),
+                  style: TextStyle(color: kPrimaryColor),
                 ),
               )
             ],
           ),
           FormError(errors: errors),
           SizedBox(height: getProportionateScreenHeight(20)),
+          SizedBox(height: SizeConfig.screenHeight * 0.1),
           DefaultButton(
             text: "Continue",
-            press: () {
+            press: () async{
               if (_formKey.currentState.validate()) {
                 _formKey.currentState.save();
                 // if all are valid then go to success screen
                 KeyboardUtil.hideKeyboard(context);
-                Navigator.pushNamed(context, LoginSuccessScreen.routeName);
+                try {
+                  UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+                      email: email,
+                      password: password
+                  ).whenComplete(() {
+                    FirebaseAuth.instance
+                        .authStateChanges()
+                        .listen((User user) {
+                      if (user == null) {
+                        print('User is currently signed out!');
+                      } else {
+                        print('User is signed in!');
+                        Navigator.pushReplacement(
+                            context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+                      }
+                    });
+                  });
+                } on FirebaseAuthException catch (e) {
+                  if (e.code == 'user-not-found') {
+                    print('No user found for that email.');
+                  } else if (e.code == 'wrong-password') {
+                    print('Wrong password provided for that user.');
+                  }
+                }
+
               }
             },
           ),
@@ -108,7 +127,30 @@ class _SignFormState extends State<SignForm> {
         return null;
       },
       decoration: InputDecoration(
-        labelText: "Password",
+        contentPadding: EdgeInsets.all(15),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+            color: Colors.transparent,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+              color: Colors.transparent,
+              width: 0.5
+          ),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+            color: Colors.transparent,
+            width: 0.5,
+          ),
+        ),
+        filled: true,
+        prefixIcon: Icon(Icons.lock_outline,color: Colors.black,size: 22,),
+        fillColor: Colors.grey[200],
         hintText: "Enter your password",
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
@@ -139,8 +181,32 @@ class _SignFormState extends State<SignForm> {
         }
         return null;
       },
+
       decoration: InputDecoration(
-        labelText: "Email",
+        contentPadding: EdgeInsets.all(15),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+            color: Colors.transparent,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+            color: Colors.transparent,
+            width: 0.5
+          ),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+            color: Colors.transparent,
+            width: 0.5,
+          ),
+        ),
+        filled: true,
+        prefixIcon: Icon(Icons.email_outlined,color: Colors.black,size: 22,),
+        fillColor: Colors.grey[200],
         hintText: "Enter your email",
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly

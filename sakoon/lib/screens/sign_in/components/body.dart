@@ -15,32 +15,7 @@ import 'sign_form.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 class Body extends StatefulWidget {
- /* bool _isLoggedIn = false;
-  Map userProfile;
-  final facebookLogin = FacebookLogin();
-  _loginWithFB() async{
-    FirebaseAuth auth= FirebaseAuth.instance ;
-    final result = await facebookLogin.logInWithReadPermissions(['email']);
-    switch (result.status) {
 
-      case FacebookLoginStatus.loggedIn:
-        final token = result.accessToken.token;
-        final graphResponse = await http.get('https://graph.facebook.com/v2.12/me?fields=name,picture,email&access_token=${token}');
-        final profile = JSON.jsonDecode(graphResponse.body);
-        setState(() {
-          userProfile = profile;
-          _isLoggedIn = true;
-        });
-        break;
-
-      case FacebookLoginStatus.cancelledByUser:
-      setState(() => _isLoggedIn = false );
-        break;
-      case FacebookLoginStatus.error:
-      setState(() => _isLoggedIn = false );
-        break;
-    }
-*/
 
   @override
   _BodyState createState() => _BodyState();
@@ -114,30 +89,35 @@ class _BodyState extends State<Body> {
 
     print("User Sign Out");
   }
- /* @override
-  void initstate(){
-    var authbloc=Provider.of<AuthBlock>(context,listen: false);
-    authbloc.currentUser.listen((fbuser) {
-      if(fbuser !=null){
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) =>HomePage())
-          );
-        }
-    });
-    super.initState();
-  }
-*/
+
   @override
   Widget build(BuildContext context) {
-   // var authbloc=Provider.of<AuthBlock>(context);
-    return SafeArea(
-      child: SizedBox(
-        width: double.infinity,
-        child: Padding(
+    return Stack(
+      children: [
+        Container(
+          child: Row(
+            children: [
+              Text("Sign In",style: TextStyle(color: Colors.white,fontSize: 20,fontWeight: FontWeight.w600),)
+            ],
+          ),
+          margin: EdgeInsets.only(top: 50,left: 20),
+        ),
+        Container(
+
+          margin: EdgeInsets.only(top: 120),
+          height: double.maxFinite,
+          decoration: BoxDecoration(
+              color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(25),
+              topRight: Radius.circular(25)
+            )
+          ),
           padding:
           EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
           child: SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: SizeConfig.screenHeight * 0.04),
                 Text(
@@ -149,14 +129,12 @@ class _BodyState extends State<Body> {
                   ),
                 ),
                 Text(
-                  "Sign in with your email and password  \nor continue with social media",
+                  "Sign in with your email and password",
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: SizeConfig.screenHeight * 0.08),
-                SignForm(),
-                SizedBox(height: SizeConfig.screenHeight * 0.08),
+                SizedBox(height: SizeConfig.screenHeight * 0.03),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     SocalCard(
                       icon: "assets/images/google.png",
@@ -189,13 +167,16 @@ class _BodyState extends State<Body> {
                     ),
                   ],
                 ),
+                SizedBox(height: SizeConfig.screenHeight * 0.03),
+                SignForm(),
+
                 SizedBox(height: getProportionateScreenHeight(20)),
                 NoAccountText(),
               ],
             ),
           ),
-        ),
-      ),
+        )
+      ],
     );
   }
 }
