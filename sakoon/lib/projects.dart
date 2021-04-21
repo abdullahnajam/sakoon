@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +74,59 @@ class _ProjectsState extends State<Projects> {
                   ],
                 ),
               ),
-              Container()
+              Container(
+                margin: EdgeInsets.all(10),
+                child: FutureBuilder<List<ProjectModel>>(
+                  future: getPartnersList(),
+                  builder: (context,snapshot){
+                    if (snapshot.hasData) {
+                      if (snapshot.data != null) {
+                        return GridView.builder(
+                            shrinkWrap: true,
+                            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                                maxCrossAxisExtent: 200,
+                                childAspectRatio: 3 / 2,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10),
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (BuildContext ctx, index) {
+                              return Container(
+                                alignment: Alignment.center,
+                                child: ClipRRect(
+                                  borderRadius:  BorderRadius.circular(15),
+                                  child: CachedNetworkImage(
+                                    imageUrl: snapshot.data[index].url,
+                                    fit: BoxFit.cover,
+                                    height: double.maxFinite,
+                                    width: double.maxFinite,
+                                    progressIndicatorBuilder: (context, url, downloadProgress) =>
+                                        CircularProgressIndicator(),
+                                    errorWidget: (context, url, error) => Icon(Icons.error),
+                                  ),
+                                ),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15)),
+                              );
+                            });
+                      }
+                      else {
+                        return new Center(
+                          child: Container(
+                              child: Text("no data")
+                          ),
+                        );
+                      }
+                    }
+                    else if (snapshot.hasError) {
+                      return Text('Error : ${snapshot.error}');
+                    } else {
+                      return new Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
+                ),
+              )
 
             ],
           ),

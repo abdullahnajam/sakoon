@@ -265,12 +265,17 @@ class _HomePageState extends State<HomePage> {
                                     itemBuilder: (context, position){
                                       return Container(
                                         width: MediaQuery.of(context).size.width,
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(15),
-                                            image: DecorationImage(
-                                                image: NetworkImage(snapshot.data[position].url),
-                                                fit: BoxFit.cover
-                                            )
+                                        child: ClipRRect(
+                                          borderRadius:  BorderRadius.circular(15),
+                                          child: CachedNetworkImage(
+                                            imageUrl: snapshot.data[position].url,
+                                            fit: BoxFit.cover,
+                                            height: double.maxFinite,
+                                            width: double.maxFinite,
+                                            progressIndicatorBuilder: (context, url, downloadProgress) =>
+                                                Center(child: CircularProgressIndicator(),),
+                                            errorWidget: (context, url, error) => Icon(Icons.error),
+                                          ),
                                         ),
 
                                       );
