@@ -8,7 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sakoon/data/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:sakoon/screens/botton_nav/homePage.dart';
+import 'package:sakoon/screens/home/homePage.dart';
 import 'package:sakoon/screens/sign_in/sign_in_screen.dart';
 import 'sign_up_form.dart';
 
@@ -18,8 +18,7 @@ class Body extends StatelessWidget {
   final GoogleSignIn googleSignIn = GoogleSignIn();
   Future<String> signInWithGoogle() async {
     final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
-    final GoogleSignInAuthentication googleSignInAuthentication =
-    await googleSignInAccount.authentication;
+    final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
 
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       accessToken: googleSignInAuthentication.accessToken,

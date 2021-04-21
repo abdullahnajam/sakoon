@@ -8,8 +8,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:sakoon/components/no_account_text.dart';
 import 'package:sakoon/components/socal_card.dart';
-import 'package:sakoon/screens/botton_nav/homePage.dart';
-import 'package:sakoon/screens/complete_profile.dart';
+import 'package:sakoon/screens/complete_profile/complete_profile_screen.dart';
+import 'package:sakoon/screens/home/homePage.dart';
 import '../../../data/size_config.dart';
 import 'sign_form.dart';
 import 'dart:async';
@@ -145,7 +145,7 @@ class _BodyState extends State<Body> {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) {
-                                  return SetUserInfo(fuser.uid);
+                                  return CompleteProfileScreen();
                                 },
                               ),
                             );

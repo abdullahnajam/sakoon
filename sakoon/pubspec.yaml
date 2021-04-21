@@ -38,6 +38,7 @@ dependencies:
   provider: ^4.3.3
   geolocator: ^5.3.1
   http: any
+  lottie: ^0.5.0
 
 dev_dependencies:
   flutter_test:
@@ -58,6 +59,7 @@ flutter:
     - assets/images/
     - assets/images/background.jpg
     - assets/icons/
+    - assets/json/
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

@@ -5,8 +5,7 @@ import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:sakoon/components/custom_surfix_icon.dart';
 import 'package:sakoon/components/default_button.dart';
 import 'package:sakoon/components/form_error.dart';
-import 'package:sakoon/screens/botton_nav/homePage.dart';
-import 'package:sakoon/screens/home/home_screen.dart';
+import 'package:sakoon/screens/home/homePage.dart';
 
 import '../../../data/constants.dart';
 import '../../../data/size_config.dart';

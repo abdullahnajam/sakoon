@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sakoon/data/my_text.dart';
+import 'package:sakoon/projects.dart';
 import 'package:sakoon/screens/about.dart';
-import 'package:sakoon/screens/botton_nav/homePage.dart';
 import 'package:sakoon/screens/complete_profile/complete_profile_screen.dart';
+import 'package:sakoon/screens/home/homePage.dart';
 import 'package:sakoon/screens/partners.dart';
 import 'package:sakoon/screens/sign_in/sign_in_screen.dart';
 class MenuDrawer extends StatefulWidget {
@@ -13,6 +15,27 @@ class MenuDrawer extends StatefulWidget {
 }
 
 class _MenuDrawerState extends State<MenuDrawer> {
+  String name=" ",email=" ";
+  getUserData() async{
+    User user= FirebaseAuth.instance.currentUser;
+    final userReference = FirebaseDatabase.instance.reference();
+    await userReference.child("user").child(user.uid).once().then((DataSnapshot dataSnapshot){
+      if(dataSnapshot.value == null){
+        Navigator.push(
+            context, MaterialPageRoute(builder: (BuildContext context) => CompleteProfileScreen()));
+      }
+      else{
+        setState(() {
+          email=dataSnapshot.value['email'];
+          name="${dataSnapshot.value['firstName']} ${dataSnapshot.value['lastName']}";
+        });
+
+      }
+
+
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -35,11 +58,11 @@ class _MenuDrawerState extends State<MenuDrawer> {
                   Container(height: 30),
                   //Image.asset('assets/images/background.jpg'),
                   Container(height: 7),
-                  Text("My Name", style: MyText.body2(context).copyWith(
+                  Text(name, style: MyText.body2(context).copyWith(
                       color: Colors.black, fontWeight: FontWeight.w500
                   )),
                   Container(height: 2),
-                  Text("email@mail.com", style: MyText.caption(context).copyWith(
+                  Text(email, style: MyText.caption(context).copyWith(
                       color: Colors.black, fontWeight: FontWeight.w500
                   ))
                 ],
@@ -61,7 +84,10 @@ class _MenuDrawerState extends State<MenuDrawer> {
               ),
             ),
             Container(height: 10),
-            InkWell(onTap: (){},
+            InkWell(onTap: (){
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (BuildContext context) => Projects()));
+            },
               child: Container(height: 40, padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   children: <Widget>[
@@ -90,7 +116,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
             Container(height: 10),
             InkWell(onTap: (){
               Navigator.pushReplacement(
-                  context, MaterialPageRoute(builder: (BuildContext context) => CompleteProfileScreen()));
+                  context, MaterialPageRoute(builder: (BuildContext context) => Partners()));
             },
               child: Container(height: 40, padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
@@ -123,5 +149,11 @@ class _MenuDrawerState extends State<MenuDrawer> {
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserData();
   }
 }
