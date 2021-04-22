@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 import 'package:sakoon/model/projects.dart';
 
 import 'data/constants.dart';
@@ -12,6 +13,8 @@ class Projects extends StatefulWidget {
 }
 
 class _ProjectsState extends State<Projects> {
+  final PageController pageController=PageController(initialPage: 0);
+  List<ProjectModel> piclist=new List();
   Future<List<ProjectModel>> getPartnersList() async {
     List<ProjectModel> list=new List();
     final databaseReference = FirebaseDatabase.instance.reference();
@@ -27,10 +30,41 @@ class _ProjectsState extends State<Projects> {
         );
         print("key ${projectModel.id}");
         list.add(projectModel);
+        piclist.add(projectModel);
 
       }
     });
     return list;
+  }
+
+  openImage(){
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return PhotoViewGallery.builder(
+              scrollPhysics: const BouncingScrollPhysics(),
+              builder: (BuildContext context, int index) {
+                return PhotoViewGalleryPageOptions(
+                  imageProvider: NetworkImage(piclist[index].url),
+                );
+              },
+              itemCount: piclist.length,
+              loadingBuilder: (context, progress) => Center(
+                child: Container(
+                  width: 20.0,
+                  height: 20.0,
+                  child: CircularProgressIndicator(
+                  ),
+                ),
+              ),
+              pageController: pageController,
+            );
+          },
+        );
+      },
+    );
   }
 
   final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
@@ -90,22 +124,27 @@ class _ProjectsState extends State<Projects> {
                                 mainAxisSpacing: 10),
                             itemCount: snapshot.data.length,
                             itemBuilder: (BuildContext ctx, index) {
-                              return Container(
-                                alignment: Alignment.center,
-                                child: ClipRRect(
-                                  borderRadius:  BorderRadius.circular(15),
-                                  child: CachedNetworkImage(
-                                    imageUrl: snapshot.data[index].url,
-                                    fit: BoxFit.cover,
-                                    height: double.maxFinite,
-                                    width: double.maxFinite,
-                                    progressIndicatorBuilder: (context, url, downloadProgress) =>
-                                        CircularProgressIndicator(),
-                                    errorWidget: (context, url, error) => Icon(Icons.error),
+                              return GestureDetector(
+                                onTap: (){
+                                  openImage();
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: ClipRRect(
+                                    borderRadius:  BorderRadius.circular(15),
+                                    child: CachedNetworkImage(
+                                      imageUrl: snapshot.data[index].url,
+                                      fit: BoxFit.cover,
+                                      height: double.maxFinite,
+                                      width: double.maxFinite,
+                                      progressIndicatorBuilder: (context, url, downloadProgress) =>
+                                          Center(child: CircularProgressIndicator(),),
+                                      errorWidget: (context, url, error) => Icon(Icons.error),
+                                    ),
                                   ),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15)),
                                 ),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15)),
                               );
                             });
                       }
