@@ -8,9 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:sakoon/components/default_button.dart';
 import 'package:sakoon/data/constants.dart';
+import 'package:sakoon/model/banner.dart';
 import 'package:sakoon/model/services.dart';
+import 'package:sakoon/model/sub_services.dart';
+import 'package:sakoon/model/user_data.dart';
 import 'package:sakoon/navigators/menu_drawer.dart';
-import 'package:sakoon/screens/home_nav/home_maintance.dart';
+import 'package:sakoon/screens/complete_profile/complete_profile_screen.dart';
 import 'package:sakoon/screens/services_list.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -24,10 +27,15 @@ class _HomePageState extends State<HomePage> {
     initialPage: 0,
   );
   String username="username";
-  User user=null;
+  String location="My Location";
+  UserData userData;
+
+  List<int> totalServicesAvailable=[];
+  final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
+
   getUser() async{
-    user=await FirebaseAuth.instance.currentUser;
-    print(jsonEncode(user));
+    User user= FirebaseAuth.instance.currentUser;
+    print("user id ${user.uid}");
     setState(() {
       username=user.uid;
     });
@@ -35,10 +43,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-
-
+    print(totalServicesAvailable.length);
+    getUserData();
   }
-  final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
+
 
   void _openDrawer () {
     _drawerKey.currentState.openDrawer();
@@ -48,32 +56,90 @@ class _HomePageState extends State<HomePage> {
     controller.dispose();
     super.dispose();
   }
+  getUserData() async{
+    User user= FirebaseAuth.instance.currentUser;
+    final userReference = FirebaseDatabase.instance.reference();
+    await userReference.child("user").child(user.uid).once().then((DataSnapshot dataSnapshot){
+      if(dataSnapshot.value == null){
+        Navigator.push(
+            context, MaterialPageRoute(builder: (BuildContext context) => CompleteProfileScreen()));
+      }
+      else{
+        setState(() {
+          location=dataSnapshot.value['address'];
+          username=dataSnapshot.value['firstName'];
+        });
 
-  String location="My Location";
+      }
 
-  final databaseReference = FirebaseDatabase.instance.reference();
+
+    });
+  }
+
+
+
+
+
+
+
+  Future<List<BannerModel>> getBanner() async {
+    List<BannerModel> list=new List();
+    final databaseReference = FirebaseDatabase.instance.reference();
+    await databaseReference.child("banner").once().then((DataSnapshot dataSnapshot){
+
+      var KEYS= dataSnapshot.value.keys;
+      var DATA=dataSnapshot.value;
+
+      for(var individualKey in KEYS) {
+        BannerModel bannerModel = new BannerModel(
+          individualKey,
+          DATA[individualKey]['url'],
+        );
+        print("key ${bannerModel.id}");
+        list.add(bannerModel);
+
+      }
+    });
+    return list;
+  }
 
   Future<List<Service>> getServices() async {
     List<Service> list=new List();
+    final databaseReference = FirebaseDatabase.instance.reference();
     await databaseReference.child("services").once().then((DataSnapshot dataSnapshot){
 
       var KEYS= dataSnapshot.value.keys;
       var DATA=dataSnapshot.value;
 
-      for(var individualKey in KEYS){
+      for(var individualKey in KEYS) {
         Service service = new Service(
             individualKey,
             DATA[individualKey]['name'],
-            DATA[individualKey]['image']
+            DATA[individualKey]['image'],
+            DATA[individualKey]['count'],
         );
         print("key ${service.id}");
         list.add(service);
 
-
-
       }
     });
     return list;
+  }
+  setLocation()async{
+    LocationResult result = await showLocationPicker(
+      context,
+      kGoogleApiKey,
+    );
+    if(result!=null){
+      setState(() {
+        location=result.address;
+      });
+      User user= FirebaseAuth.instance.currentUser;
+      final databaseReference = FirebaseDatabase.instance.reference();
+      databaseReference.child("user").child(user.uid).update({
+        'address': location,
+      });
+    }
   }
 
   @override
@@ -97,8 +163,6 @@ class _HomePageState extends State<HomePage> {
                       begin: Alignment.centerRight,
                       end: Alignment.centerLeft,
                       colors: [
-                        /*Color(0xfffffbef),
-                        Color(0xffdbf8fe),*/
                         Color(0xfffe734c),
                         Color(0xfffe734c)
 
@@ -119,22 +183,14 @@ class _HomePageState extends State<HomePage> {
                                 child: Image.asset('assets/images/menu.png',width: 25,height: 25,),
                               ),
                               SizedBox(width: 10,),
-                              Text("Hi, ${username}",style: TextStyle(color: Colors.white,fontSize: 16),)
+                              Text("Hi, $username",style: TextStyle(color: Colors.white,fontSize: 16),)
                             ],
                           )
 
                         ),
                         GestureDetector(
-                          onTap: () async{
-                            LocationResult result = await showLocationPicker(
-                              context,
-                              kGoogleApiKey,
-                            );
-                            if(result!=null){
-                              setState(() {
-                                location=result.address;
-                              });
-                            }
+                          onTap: () {
+                            setLocation();
                           },
                           child: Container(
                             padding: EdgeInsets.only(left: 15,right: 15),
@@ -192,39 +248,67 @@ class _HomePageState extends State<HomePage> {
                 child: Container(
                   padding: EdgeInsets.only(left: 15,right: 15),
                   margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.35),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Container(
-                        height: MediaQuery.of(context).size.height*0.18,
-                        width: double.maxFinite,
-                        child: PageView.builder(
-                          controller: controller,
-                            itemCount: 3,
-                            itemBuilder: (context, position){
-                              return Container(
-                                width: MediaQuery.of(context).size.width,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  image: DecorationImage(
-                                    image: AssetImage("assets/images/banner.png",),
-                                    fit: BoxFit.cover
-                                  )
-                                ),
+                  child: FutureBuilder<List<BannerModel>>(
+                    future: getBanner(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        if (snapshot.data != null) {
+                          return  Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Container(
+                                height: MediaQuery.of(context).size.height*0.18,
+                                width: double.maxFinite,
+                                child: PageView.builder(
+                                    controller: controller,
+                                    itemCount: snapshot.data.length,
+                                    itemBuilder: (context, position){
+                                      return Container(
+                                        width: MediaQuery.of(context).size.width,
+                                        child: ClipRRect(
+                                          borderRadius:  BorderRadius.circular(15),
+                                          child: CachedNetworkImage(
+                                            imageUrl: snapshot.data[position].url,
+                                            fit: BoxFit.cover,
+                                            height: double.maxFinite,
+                                            width: double.maxFinite,
+                                            progressIndicatorBuilder: (context, url, downloadProgress) =>
+                                                Center(child: CircularProgressIndicator(),),
+                                            errorWidget: (context, url, error) => Icon(Icons.error),
+                                          ),
+                                        ),
 
-                              );
-                            }
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 10),
-                        child: SmoothPageIndicator(
-                          controller: controller,
-                          count: 3,
-                          effect: WormEffect(dotWidth: 10,dotHeight:10,activeDotColor: kPrimaryColor,dotColor: Colors.grey[200]),
-                        ),
-                      ),
-                    ],
+                                      );
+                                    }
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(top: 10),
+                                child: SmoothPageIndicator(
+                                  controller: controller,
+                                  count: snapshot.data.length,
+                                  effect: WormEffect(dotWidth: 10,dotHeight:10,activeDotColor: kPrimaryColor,dotColor: Colors.grey[200]),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                        else {
+                          return new Center(
+                            child: Container(
+                                child: Text("no data")
+                            ),
+                          );
+                        }
+                      }
+                      else if (snapshot.hasError) {
+                        return Text('Error : ${snapshot.error}');
+                      } else {
+                        return new Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    },
                   ),
 
                 ),
@@ -261,9 +345,23 @@ class _HomePageState extends State<HomePage> {
                       itemCount: snapshot.data.length,
                       itemBuilder: (BuildContext context,int index){
                         return GestureDetector(
-                          onTap: (){
-                            Navigator.push(
-                                context, MaterialPageRoute(builder: (BuildContext context) => ServicesCheckList(snapshot.data[index])));
+                          onTap: () {
+                            if(location=="My Location"){
+                              setLocation();
+                            }
+                            else{
+                              final scaffold = Scaffold.of(context);
+                              User user= FirebaseAuth.instance.currentUser;
+                              final databaseReference = FirebaseDatabase.instance.reference();
+                              databaseReference.child("activities").push().set({
+                                'address': location,
+                                'user': user.uid,
+                                'serviceTapped': snapshot.data[index].name,
+                              });
+                              Navigator.push(
+                                  context, MaterialPageRoute(builder: (BuildContext context) => ServicesCheckList(snapshot.data[index],location)));
+                            }
+
                           },
                           child: Container(
                             margin: EdgeInsets.only(left: 10,right: 10,bottom: 10),
@@ -282,8 +380,10 @@ class _HomePageState extends State<HomePage> {
                                     CircularProgressIndicator(),
                                 errorWidget: (context, url, error) => Icon(Icons.error),
                               ),
-                              title: Text(snapshot.data[index].name,style: TextStyle(fontSize: 18,color: Colors.black,fontWeight: FontWeight.w400),),
-                              subtitle: Text('10 services'),
+                              title: Text(snapshot.data[index].name.toString(),style: TextStyle(fontSize: 18,color: Colors.black,fontWeight: FontWeight.w400),),
+                              subtitle: int.parse(snapshot.data[index].count)>1?
+                              Text('${snapshot.data[index].count} services'):
+                              Text('${snapshot.data[index].count} service')
                             ),
                           ),
                         );

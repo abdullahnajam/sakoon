@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sakoon/data/constants.dart';
-import 'package:sakoon/screens/botton_nav/homePage.dart';
+import 'package:sakoon/screens/home/homePage.dart';
 import 'package:sakoon/screens/sign_in/sign_in_screen.dart';
 
 class SplashScreen extends StatefulWidget {

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:sakoon/components/custom_surfix_icon.dart';
 import 'package:sakoon/components/default_button.dart';
 import 'package:sakoon/components/form_error.dart';
-import 'package:sakoon/screens/botton_nav/homePage.dart';
 import 'package:sakoon/screens/complete_profile/complete_profile_screen.dart';
 
 import '../../../data/constants.dart';
@@ -48,7 +47,7 @@ class _SignUpFormState extends State<SignUpForm> {
           SizedBox(height: getProportionateScreenHeight(30)),
           buildConformPassFormField(),
           FormError(errors: errors),
-          SizedBox(height: getProportionateScreenHeight(40)),
+          SizedBox(height: getProportionateScreenHeight(50)),
           DefaultButton(
             text: "Continue",
             press: () async{
@@ -68,7 +67,7 @@ class _SignUpFormState extends State<SignUpForm> {
                       } else {
                         print('User is signed in!');
                         Navigator.pushReplacement(
-                            context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+                            context, MaterialPageRoute(builder: (BuildContext context) => CompleteProfileScreen()));
                       }
                     });
                   });
@@ -113,8 +112,31 @@ class _SignUpFormState extends State<SignUpForm> {
         return null;
       },
       decoration: InputDecoration(
-        labelText: "Confirm Password",
-        hintText: "Re-enter your password",
+        contentPadding: EdgeInsets.all(15),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+            color: Colors.transparent,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+              color: Colors.transparent,
+              width: 0.5
+          ),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+            color: Colors.transparent,
+            width: 0.5,
+          ),
+        ),
+        filled: true,
+        prefixIcon: Icon(Icons.lock_outlined,color: Colors.black,size: 22,),
+        fillColor: Colors.grey[200],
+        hintText: "Re-Enter your password",
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -145,7 +167,30 @@ class _SignUpFormState extends State<SignUpForm> {
         return null;
       },
       decoration: InputDecoration(
-        labelText: "Password",
+        contentPadding: EdgeInsets.all(15),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+            color: Colors.transparent,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+              color: Colors.transparent,
+              width: 0.5
+          ),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+            color: Colors.transparent,
+            width: 0.5,
+          ),
+        ),
+        filled: true,
+        prefixIcon: Icon(Icons.lock_outlined,color: Colors.black,size: 22,),
+        fillColor: Colors.grey[200],
         hintText: "Enter your password",
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
@@ -177,7 +222,30 @@ class _SignUpFormState extends State<SignUpForm> {
         return null;
       },
       decoration: InputDecoration(
-        labelText: "Email",
+        contentPadding: EdgeInsets.all(15),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+            color: Colors.transparent,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+              color: Colors.transparent,
+              width: 0.5
+          ),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide(
+            color: Colors.transparent,
+            width: 0.5,
+          ),
+        ),
+        filled: true,
+        prefixIcon: Icon(Icons.email_outlined,color: Colors.black,size: 22,),
+        fillColor: Colors.grey[200],
         hintText: "Enter your email",
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly

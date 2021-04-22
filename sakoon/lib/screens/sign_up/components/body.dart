@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:sakoon/components/socal_card.dart';
@@ -7,7 +8,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sakoon/data/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:sakoon/screens/botton_nav/homePage.dart';
+import 'package:sakoon/screens/home/homePage.dart';
+import 'package:sakoon/screens/sign_in/sign_in_screen.dart';
 import 'sign_up_form.dart';
 
 class Body extends StatelessWidget {
@@ -16,8 +18,7 @@ class Body extends StatelessWidget {
   final GoogleSignIn googleSignIn = GoogleSignIn();
   Future<String> signInWithGoogle() async {
     final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
-    final GoogleSignInAuthentication googleSignInAuthentication =
-    await googleSignInAccount.authentication;
+    final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
 
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       accessToken: googleSignInAuthentication.accessToken,
@@ -81,39 +82,53 @@ class Body extends StatelessWidget {
   }
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: SizedBox(
-        width: double.infinity,
-        child: Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
+    return Stack(
+      children: [
+        Container(
+          child: Row(
+            children: [
+              Text("Sign Up",style: TextStyle(color: Colors.white,fontSize: 20,fontWeight: FontWeight.w600),)
+            ],
+          ),
+          margin: EdgeInsets.only(top: 50,left: 20),
+        ),
+        Container(
+          height: double.maxFinite,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(25),
+                  topRight: Radius.circular(25)
+              )
+          ),
+          margin: EdgeInsets.only(top: 120),
+          padding: EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
           child: SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: SizeConfig.screenHeight * 0.04), // 4%
                 Text("Register Account", style: headingStyle),
                 Text(
-                  "Complete your details or continue \nwith social media",
+                  "Complete your details",
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: SizeConfig.screenHeight * 0.08),
-                SignUpForm(),
-                SizedBox(height: SizeConfig.screenHeight * 0.08),
+                SizedBox(height: SizeConfig.screenHeight * 0.03),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     SocalCard(
                       icon: "assets/images/google.png",
                       press: () {
                         signInWithGoogle().whenComplete(() {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return HomePage();
-                            },
-                          ),
-                        );
-                      });
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return HomePage();
+                              },
+                            ),
+                          );
+                        });
                       },
                     ),
                     SocalCard(
@@ -122,17 +137,34 @@ class Body extends StatelessWidget {
                     ),
                   ],
                 ),
+                SizedBox(height: SizeConfig.screenHeight * 0.03),
+                SignUpForm(),
+
+
                 SizedBox(height: getProportionateScreenHeight(20)),
-                Text(
-                  'By continuing your confirm that you agree \nwith our Term and Condition',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.caption,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Already have an account? ",
+                      style: TextStyle(fontSize: getProportionateScreenWidth(16)),
+                    ),
+                    GestureDetector(
+                      onTap: () => Navigator.pushNamed(context, SignInScreen.routeName),
+                      child: Text(
+                        "Sign In",
+                        style: TextStyle(
+                            fontSize: getProportionateScreenWidth(16),
+                            color: kPrimaryColor),
+                      ),
+                    ),
+                  ],
                 )
               ],
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 }

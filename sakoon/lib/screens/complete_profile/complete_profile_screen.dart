@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sakoon/data/constants.dart';
 
 import 'components/body.dart';
 
@@ -7,9 +8,7 @@ class CompleteProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Sign Up'),
-      ),
+      backgroundColor: kPrimaryColor,
       body: Body(),
     );
   }
