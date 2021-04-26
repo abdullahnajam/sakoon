@@ -93,7 +93,11 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
             text: "continue",
             press: () {
               if (_formKey.currentState.validate()) {
+<<<<<<< HEAD
                 //Navigator.pushNamed(context, HomePage.routename);
+=======
+                Navigator.pushNamed(context, HomeScreen.routeName);
+>>>>>>> da7a557cb37d7f2e71f1c0b0748546d5230df965
                 //FocusScope.of(context).unfocus();
                 saveInfo();
               }
