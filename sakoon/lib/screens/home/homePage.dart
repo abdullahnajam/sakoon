@@ -61,8 +61,7 @@ class _HomePageState extends State<HomePage> {
     final userReference = FirebaseDatabase.instance.reference();
     await userReference.child("user").child(user.uid).once().then((DataSnapshot dataSnapshot){
       if(dataSnapshot.value == null){
-        Navigator.push(
-            context, MaterialPageRoute(builder: (BuildContext context) => CompleteProfileScreen()));
+        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => CompleteProfileScreen()));
       }
       else{
         setState(() {

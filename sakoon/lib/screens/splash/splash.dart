@@ -36,14 +36,25 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void navigationPage() {
-    if(user!=null){
+    FirebaseAuth.instance.authStateChanges().listen((User user) {
+      if (user == null) {
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (BuildContext context) => SignInScreen()));
+      } else {
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+        /*Navigator.pushReplacement(
+                                  context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));*/
+      }
+    });
+    /*if(user!=null){
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (BuildContext context) => HomePage()));
     }
     else{
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (BuildContext context) => SignInScreen()));
-    }
+    }*/
 
   }
 

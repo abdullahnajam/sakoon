@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sakoon/navigators/menu_drawer.dart';
-import 'package:sakoon/screens/botton_nav/homePage.dart';
+import 'package:sakoon/screens/home/homePage.dart';
 class AboutUs extends StatefulWidget {
   @override
   _AboutUsState createState() => _AboutUsState();

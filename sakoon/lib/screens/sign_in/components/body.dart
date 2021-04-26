@@ -1,6 +1,6 @@
 import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -15,12 +15,25 @@ import 'sign_form.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 class Body extends StatefulWidget {
-
-
   @override
   _BodyState createState() => _BodyState();
 }
 class _BodyState extends State<Body> {
+  getUserData() async{
+    print("func");
+    User user= FirebaseAuth.instance.currentUser;
+    final userReference = FirebaseDatabase.instance.reference();
+    await userReference.child("user").child(user.uid).once().then((DataSnapshot dataSnapshot){
+      if(dataSnapshot.value == null){
+        print("complete");
+        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => CompleteProfileScreen()));
+      }
+      else{
+        print("home");
+        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+      }
+    });
+  }
   String name,image;
   static final FacebookLogin facebookSignIn = new FacebookLogin();
   String _message = 'Log in/out by pressing the buttons below.';
@@ -29,19 +42,11 @@ class _BodyState extends State<Body> {
     await facebookSignIn.logInWithReadPermissions(['email']);
 
     switch (result.status) {
-
       case FacebookLoginStatus.loggedIn:
         final FacebookAccessToken accessToken = result.accessToken;
-        final graphResponse = await http.get(
-            'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,picture&access_token=${accessToken.token}');
-        final profile = jsonDecode(graphResponse.body);
-        print(profile);
-        setState(() {
-          name=profile['first_name'];
-          image=profile['picture'];
-        });
         print('''
          Logged in!
+         
          Token: ${accessToken.token}
          User id: ${accessToken.userId}
          Expires: ${accessToken.expires}
@@ -57,6 +62,17 @@ class _BodyState extends State<Body> {
             'Here\'s the error Facebook gave us: ${result.errorMessage}');
         break;
     }
+  }
+  Future<User> signInWithFacebook() async {
+    print("here");
+    // Trigger the sign-in flow
+    final FirebaseAuth _fAuth = FirebaseAuth.instance;
+    final FacebookLoginResult facebookLoginResult = await facebookSignIn.logInWithReadPermissions(['email']);
+    FacebookAccessToken facebookAccessToken = facebookLoginResult.accessToken;
+    AuthCredential authCredential = FacebookAuthProvider.credential(facebookAccessToken.token);//accessToken: facebookAccessToken.token);
+    User fbUser;
+    fbUser = (await _fAuth.signInWithCredential(authCredential)).user;
+    //Token: ${accessToken.token}
   }
 
 
@@ -139,31 +155,40 @@ class _BodyState extends State<Body> {
                     SocalCard(
                       icon: "assets/images/google.png",
                       press: () {
-                        signInWithGoogle().whenComplete(() async {
-                          User fuser=await FirebaseAuth.instance.currentUser;
-                          if(fuser.uid!=null){
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return CompleteProfileScreen();
-                                },
-                              ),
-                            );
-                          }
-                          else{
-                            print("fuser is null");
-                          }
-
+                        signInWithGoogle().whenComplete(() {
+                          FirebaseAuth.instance.authStateChanges().listen((User user) {
+                            if (user == null) {
+                              print('User is currently signed out!');
+                            } else {
+                              print("else");
+                              getUserData();
+                              /*Navigator.pushReplacement(
+                                  context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));*/
+                            }
+                          });
+                        }).catchError((onError){
+                          print(onError.toString());
                         });
                       },
                     ),
                     SocalCard(
                       icon: "assets/images/facebook.png",
-                      press: ()  {
-                        _login();
-                        Navigator.pushNamed(context, HomePage.routename);
+                      press:() {
+                        signInWithFacebook().whenComplete(() {
+                          FirebaseAuth.instance.authStateChanges().listen((User user) {
+                            if (user == null) {
+                              print('User is currently signed out!');
+                            } else {
+                              print("else");
+                              getUserData();
+                              /*Navigator.pushReplacement(
+                                  context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));*/
+                            }
+                          });
+                        }).catchError((onError){
+                          print(onError.toString());
+                        });
                       },
-
                     ),
                   ],
                 ),

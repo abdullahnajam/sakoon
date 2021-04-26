@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -8,11 +9,32 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sakoon/data/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sakoon/screens/complete_profile/complete_profile_screen.dart';
 import 'package:sakoon/screens/home/homePage.dart';
 import 'package:sakoon/screens/sign_in/sign_in_screen.dart';
 import 'sign_up_form.dart';
 
-class Body extends StatelessWidget {
+class Body extends StatefulWidget {
+  @override
+  _BodyState createState() => _BodyState();
+}
+
+class _BodyState extends State<Body> {
+  getUserData() async{
+    print("func");
+    User user= FirebaseAuth.instance.currentUser;
+    final userReference = FirebaseDatabase.instance.reference();
+    await userReference.child("user").child(user.uid).once().then((DataSnapshot dataSnapshot){
+      if(dataSnapshot.value == null){
+        print("complete");
+        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => CompleteProfileScreen()));
+      }
+      else{
+        print("home");
+        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+      }
+    });
+  }
   static final FacebookLogin facebookSignIn = new FacebookLogin();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -69,15 +91,23 @@ class Body extends StatelessWidget {
         break;
     }
   }
-  Future<FirebaseUser> signInWithFacebook() async {
+  Future<User> signInWithFacebook() async {
     print("here");
     // Trigger the sign-in flow
     final FirebaseAuth _fAuth = FirebaseAuth.instance;
     final FacebookLoginResult facebookLoginResult = await facebookSignIn.logInWithReadPermissions(['email']);
-    FacebookAccessToken facebookAccessToken = facebookLoginResult.accessToken;
-    AuthCredential authCredential = FacebookAuthProvider.credential(facebookAccessToken.token);//accessToken: facebookAccessToken.token);
-    FirebaseUser fbUser;
-    fbUser = (await _fAuth.signInWithCredential(authCredential)).user;
+    if (facebookLoginResult.status == FacebookLoginStatus.loggedIn){
+      FacebookAccessToken facebookAccessToken = facebookLoginResult.accessToken;
+      AuthCredential authCredential = FacebookAuthProvider.credential(facebookAccessToken.token);//accessToken: facebookAccessToken.token);
+      User fbUser;
+      fbUser = (await _fAuth.signInWithCredential(authCredential)).user;
+
+    }
+    else{
+      print(facebookLoginResult.status);
+    }
+
+
     //Token: ${accessToken.token}
   }
   @override
@@ -121,19 +151,39 @@ class Body extends StatelessWidget {
                       icon: "assets/images/google.png",
                       press: () {
                         signInWithGoogle().whenComplete(() {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return HomePage();
-                              },
-                            ),
-                          );
+                          FirebaseAuth.instance.authStateChanges().listen((User user) {
+                            if (user == null) {
+                              print('User is currently signed out!');
+                            } else {
+                              print("else");
+                              getUserData();
+                              /*Navigator.pushReplacement(
+                                  context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));*/
+                            }
+                          });
+                        }).catchError((onError){
+                          print(onError.toString());
                         });
                       },
                     ),
                     SocalCard(
                       icon: 'assets/images/facebook.png',
-                      press: signInWithFacebook,
+                      press: () {
+                        signInWithFacebook().whenComplete(() {
+                          FirebaseAuth.instance.authStateChanges().listen((User user) {
+                            if (user == null) {
+                              print('User is currently signed out!');
+                            } else {
+                              print("else");
+                              getUserData();
+                              /*Navigator.pushReplacement(
+                                  context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));*/
+                            }
+                          });
+                        }).catchError((onError){
+                          print(onError.toString());
+                        });
+                      },
                     ),
                   ],
                 ),
@@ -168,3 +218,4 @@ class Body extends StatelessWidget {
     );
   }
 }
+
