@@ -1,18 +1,23 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sakoon/components/default_button.dart';
 import 'package:sakoon/data/constants.dart';
 import 'package:sakoon/model/services.dart';
 import 'package:sakoon/model/sub_services.dart';
+
+
+import 'package:sakoon/model/user_data.dart';
 import 'home/homePage.dart';
 
 class ServicesCheckList extends StatefulWidget {
   Service _service;
   String location;
+  UserData userData;
 
-  ServicesCheckList(this._service,this.location);
+  ServicesCheckList(this._service,this.location,this.userData);
 
 
   @override
@@ -59,7 +64,10 @@ class _ServiceCheckListState extends State<ServicesCheckList> {
       'serviceId': widget._service.id,
       'serviceName': widget._service.name,
       'user': user.uid,
-      'time': DateTime.now().toString(),
+      'name': "${widget.userData.firstName} ${widget.userData.lastName}",
+      'email': widget.userData.email,
+      'phone': widget.userData.phoneNumber,
+      'time': DateFormat.yMd().add_jm().format(DateTime.now()),
       'address':widget.location
     }).then((value) {
       _showSuccessDailog();
@@ -82,10 +90,10 @@ class _ServiceCheckListState extends State<ServicesCheckList> {
           insetAnimationDuration: const Duration(seconds: 1),
           insetAnimationCurve: Curves.fastOutSlowIn,
           elevation: 2,
-          
+
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30)
+                borderRadius: BorderRadius.circular(30)
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -100,12 +108,12 @@ class _ServiceCheckListState extends State<ServicesCheckList> {
                   ),
                 ),
                 Container(
-                  child: Column(
-                    children: [
-                      Text("Successful",style: TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w400),),
-                      Text("Your request has been submitted",style: TextStyle(fontSize: 13,fontWeight: FontWeight.w300),),
-                    ],
-                  )
+                    child: Column(
+                      children: [
+                        Text("Successful",style: TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w400),),
+                        Text("Your request has been submitted",style: TextStyle(fontSize: 13,fontWeight: FontWeight.w300),),
+                      ],
+                    )
 
                 ),
                 Container(
@@ -240,114 +248,113 @@ class _ServiceCheckListState extends State<ServicesCheckList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: AnimatedContainer(
-                height: isSelected ? 60.0 : 0.0,
-                duration: const Duration(seconds: 1),
-                curve: Curves.fastOutSlowIn,
-                child: GestureDetector(
-                  onTap: (){
-                    _showSuccessDailog();
-                    //submitData();
-                  },
-                  child: Container(
-                    height: 40,
-                    width: double.maxFinite,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: kPrimaryColor,
-                      borderRadius: BorderRadius.circular(20),
-
-                    ),
-                    child: Text("Submit",style: TextStyle(color: Colors.white,fontSize: 18),),
-                    margin: EdgeInsets.only(left: 20,right: 20,bottom: 15),
-                  ),
-                )
-              ),
-            ),
-            Column(
-              children: [
-                Container(
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border(
-                      bottom: BorderSide(width: 0.2, color: Colors.grey[500]),
-                    ),
-
-                  ),
-                  child: Stack(
-                    children: [
-                      GestureDetector(
-                        child: Container(
-                          margin: EdgeInsets.only(left: 15),
-                          alignment: Alignment.centerLeft,
-                          child: Icon(Icons.arrow_back,color: kPrimaryColor,),
-                        ),
-                        onTap: ()=>Navigator.pop(context),
-                      ),
-                      Container(
+        body: SafeArea(
+          child: Stack(
+            children: [
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: AnimatedContainer(
+                    height: isSelected ? 60.0 : 0.0,
+                    duration: const Duration(seconds: 1),
+                    curve: Curves.fastOutSlowIn,
+                    child: GestureDetector(
+                      onTap: (){
+                        submitData();
+                      },
+                      child: Container(
+                        height: 40,
+                        width: double.maxFinite,
                         alignment: Alignment.center,
-                        child: Text("${widget._service.name}",style: TextStyle(fontWeight: FontWeight.w700,fontSize: 13),),
+                        decoration: BoxDecoration(
+                          color: kPrimaryColor,
+                          borderRadius: BorderRadius.circular(20),
+
+                        ),
+                        child: Text("Submit",style: TextStyle(color: Colors.white,fontSize: 18),),
+                        margin: EdgeInsets.only(left: 20,right: 20,bottom: 15),
+                      ),
+                    )
+                ),
+              ),
+              Column(
+                children: [
+                  Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border(
+                        bottom: BorderSide(width: 0.2, color: Colors.grey[500]),
                       ),
 
-
-                    ],
-                  ),
-                ),
-                FutureBuilder<List<SubService>>(
-                  future: getServiceList(),
-                  builder: (context,snapshot){
-                    if (snapshot.hasData) {
-                      if (snapshot.data != null) {
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          //scrollDirection: Axis.horizontal,
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (BuildContext context,int index){
-                            return CheckboxListTile(
-                                title: Text(snapshot.data[index].name),
-                                value: isCheck[index],
-                                activeColor: kPrimaryColor,
-                                onChanged: (bool value){
-                                  setState(() {
-                                    print("index $index");
-                                    isCheck[index]=value;
-
-                                  });
-                                  checkSelected();
-                                }
-                            );
-                          },
-                        );
-                      }
-                      else {
-                        return new Center(
+                    ),
+                    child: Stack(
+                      children: [
+                        GestureDetector(
                           child: Container(
-                              child: Text("no data")
+                            margin: EdgeInsets.only(left: 15),
+                            alignment: Alignment.centerLeft,
+                            child: Icon(Icons.arrow_back,color: kPrimaryColor,),
                           ),
+                          onTap: ()=>Navigator.pop(context),
+                        ),
+                        Container(
+                          alignment: Alignment.center,
+                          child: Text("${widget._service.name}",style: TextStyle(fontWeight: FontWeight.w700,fontSize: 13),),
+                        ),
+
+
+                      ],
+                    ),
+                  ),
+                  FutureBuilder<List<SubService>>(
+                    future: getServiceList(),
+                    builder: (context,snapshot){
+                      if (snapshot.hasData) {
+                        if (snapshot.data != null) {
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            //scrollDirection: Axis.horizontal,
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (BuildContext context,int index){
+                              return CheckboxListTile(
+                                  title: Text(snapshot.data[index].name),
+                                  value: isCheck[index],
+                                  activeColor: kPrimaryColor,
+                                  onChanged: (bool value){
+                                    setState(() {
+                                      print("index $index");
+                                      isCheck[index]=value;
+
+                                    });
+                                    checkSelected();
+                                  }
+                              );
+                            },
+                          );
+                        }
+                        else {
+                          return new Center(
+                            child: Container(
+                                child: Text("no data")
+                            ),
+                          );
+                        }
+                      }
+                      else if (snapshot.hasError) {
+                        return Text('Error : ${snapshot.error}');
+                      } else {
+                        return new Center(
+                          child: CircularProgressIndicator(),
                         );
                       }
-                    }
-                    else if (snapshot.hasError) {
-                      return Text('Error : ${snapshot.error}');
-                    } else {
-                      return new Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  },
-                )
+                    },
+                  )
 
-              ],
-            )
-          ],
-        ),
-      )
+                ],
+              )
+            ],
+          ),
+        )
 
     );
   }

@@ -1,11 +1,12 @@
 import 'dart:convert';
-
+import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:sakoon/components/default_button.dart';
 import 'package:sakoon/data/constants.dart';
 import 'package:sakoon/model/banner.dart';
@@ -33,6 +34,33 @@ class _HomePageState extends State<HomePage> {
   List<int> totalServicesAvailable=[];
   final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
+  getUserData() async{
+    User user= FirebaseAuth.instance.currentUser;
+    final userReference = FirebaseDatabase.instance.reference();
+    await userReference.child("user").child(user.uid).once().then((DataSnapshot dataSnapshot){
+      if(dataSnapshot.value == null){
+        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => CompleteProfileScreen()));
+      }
+      else{
+        setState(() {
+          location=dataSnapshot.value['address'];
+          username=dataSnapshot.value['firstName'];
+          userData=new UserData(
+            user.uid,
+            dataSnapshot.value['firstName'],
+            dataSnapshot.value['lastName'],
+            dataSnapshot.value['phoneNumber'],
+            dataSnapshot.value['email'],
+            dataSnapshot.value['address'],
+          );
+        });
+
+      }
+
+
+    });
+  }
+
   getUser() async{
     User user= FirebaseAuth.instance.currentUser;
     print("user id ${user.uid}");
@@ -56,24 +84,7 @@ class _HomePageState extends State<HomePage> {
     controller.dispose();
     super.dispose();
   }
-  getUserData() async{
-    User user= FirebaseAuth.instance.currentUser;
-    final userReference = FirebaseDatabase.instance.reference();
-    await userReference.child("user").child(user.uid).once().then((DataSnapshot dataSnapshot){
-      if(dataSnapshot.value == null){
-        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => CompleteProfileScreen()));
-      }
-      else{
-        setState(() {
-          location=dataSnapshot.value['address'];
-          username=dataSnapshot.value['firstName'];
-        });
 
-      }
-
-
-    });
-  }
 
 
 
@@ -353,12 +364,28 @@ class _HomePageState extends State<HomePage> {
                               User user= FirebaseAuth.instance.currentUser;
                               final databaseReference = FirebaseDatabase.instance.reference();
                               databaseReference.child("activities").push().set({
+                                'name': "${userData.firstName} ${userData.lastName}",
+                                'email': userData.email,
+                                'phone': userData.phoneNumber,
                                 'address': location,
                                 'user': user.uid,
                                 'serviceTapped': snapshot.data[index].name,
+                                'dateTime': DateFormat.yMd().add_jm().format(DateTime.now())
+                              });
+                              var data={
+                                "message": '"${userData.firstName} ${userData.lastName} has clicked on ${snapshot.data[index].name}',
+
+
+                              };
+                              http.post('https://sukoonadmin.000webhostapp.com/Notification.php', body: data).then((res) {
+                                print('${res.statusCode}+${res.body}');
+
+                              }).catchError((err) {
+                                print("error"+err.toString());
+
                               });
                               Navigator.push(
-                                  context, MaterialPageRoute(builder: (BuildContext context) => ServicesCheckList(snapshot.data[index],location)));
+                                  context, MaterialPageRoute(builder: (BuildContext context) => ServicesCheckList(snapshot.data[index],location,userData)));
                             }
 
                           },

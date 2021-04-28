@@ -22,19 +22,16 @@ class _SplashScreenState extends State<SplashScreen> {
   getCurrentUser()async{
     user=await FirebaseAuth.instance.currentUser;
   }
-
   @override
   void initState() {
     super.initState();
     getCurrentUser();
     _loadWidget();
   }
-
   _loadWidget() async {
     var _duration = Duration(seconds: splashDelay);
     return Timer(_duration, navigationPage);
   }
-
   void navigationPage() {
     FirebaseAuth.instance.authStateChanges().listen((User user) {
       if (user == null) {
@@ -57,7 +54,6 @@ class _SplashScreenState extends State<SplashScreen> {
     }*/
 
   }
-
   @override
   Widget build(BuildContext context) {
 
