@@ -44,6 +44,7 @@ class _PartnersState extends State<Partners> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[200],
         key: _drawerKey,
         drawer: MenuDrawer(),
         body: SafeArea(
