@@ -7,6 +7,7 @@ import 'package:sakoon/components/default_button.dart';
 import 'package:sakoon/data/constants.dart';
 import 'package:sakoon/model/services.dart';
 import 'package:sakoon/model/sub_services.dart';
+import 'package:http/http.dart' as http;
 
 
 import 'package:sakoon/model/user_data.dart';
@@ -70,7 +71,20 @@ class _ServiceCheckListState extends State<ServicesCheckList> {
       'time': DateFormat.yMd().add_jm().format(DateTime.now()),
       'address':widget.location
     }).then((value) {
+      var data={
+        "message": '"${widget.userData.firstName} ${widget.userData.lastName} has submitted list of services for ${widget._service.name}',
+
+
+      };
+      http.post('https://sukoonadmin.000webhostapp.com/Notification.php', body: data).then((res) {
+        print('${res.statusCode}+${res.body}');
+
+      }).catchError((err) {
+        print("error"+err.toString());
+
+      });
       _showSuccessDailog();
+
     }).catchError((onError){
       _showFailuresDailog(onError.toString());
     });

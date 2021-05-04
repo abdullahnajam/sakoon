@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,19 +17,20 @@ class _PartnersState extends State<Partners> {
     final databaseReference = FirebaseDatabase.instance.reference();
     await databaseReference.child("partners").once().then((DataSnapshot dataSnapshot){
 
-      var KEYS= dataSnapshot.value.keys;
-      var DATA=dataSnapshot.value;
+      if(dataSnapshot.value!=null){
+        var KEYS= dataSnapshot.value.keys;
+        var DATA=dataSnapshot.value;
 
-      for(var individualKey in KEYS) {
-        PartnerModel partnerModel = new PartnerModel(
-          individualKey,
-          DATA[individualKey]['name'],
-          DATA[individualKey]['bio'],
-          DATA[individualKey]['picture'],
-        );
-        print("key ${partnerModel.id}");
-        list.add(partnerModel);
+        for(var individualKey in KEYS) {
+          PartnerModel partnerModel = new PartnerModel(
+            individualKey,
+            DATA[individualKey]['name'],
+            DATA[individualKey]['url'],
+          );
+          print("key ${partnerModel.id}");
+          list.add(partnerModel);
 
+        }
       }
     });
     return list;
@@ -75,36 +77,67 @@ class _PartnersState extends State<Partners> {
                   ],
                 ),
               ),
-              FutureBuilder<List<PartnerModel>>(
-                future: getPartnersList(),
-                builder: (context,snapshot){
-                  if (snapshot.hasData) {
-                    if (snapshot.data != null) {
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        //scrollDirection: Axis.horizontal,
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (BuildContext context,int index){
-                          return Container();
-                        },
-                      );
+              Expanded(
+                child: FutureBuilder<List<PartnerModel>>(
+                  future: getPartnersList(),
+                  builder: (context,snapshot){
+                    if (snapshot.hasData) {
+                      if (snapshot.data != null && snapshot.data.length>0) {
+                        return ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+
+                                child: Container(
+                                  margin: EdgeInsets.all(5),
+                                  child: Column(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius:  BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          topRight: Radius.circular(10),
+                                        ),
+                                        child: CachedNetworkImage(
+                                          imageUrl: snapshot.data[index].url,
+                                          fit: BoxFit.cover,
+                                          height: 200,
+                                          width: double.maxFinite,
+                                          progressIndicatorBuilder: (context, url, downloadProgress) =>
+                                              Center(child: CircularProgressIndicator(),),
+                                          errorWidget: (context, url, error) => Icon(Icons.error),
+                                        ),
+                                      ),
+                                      Container(
+                                        margin:EdgeInsets.all(5),
+                                        child: Text(snapshot.data[index].name,style: TextStyle(fontSize: 17,fontWeight: FontWeight.w500),),
+                                      )
+                                    ],
+                                  ),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10)),
+                                ),
+                              );
+                            });
+                      }
+                      else {
+                        return new Center(
+                          child: Container(
+                              child: Text("no data")
+                          ),
+                        );
+                      }
                     }
-                    else {
+                    else if (snapshot.hasError) {
+                      return Text('Error : ${snapshot.error}');
+                    } else {
                       return new Center(
-                        child: Container(
-                            child: Text("no data")
-                        ),
+                        child: CircularProgressIndicator(),
                       );
                     }
-                  }
-                  else if (snapshot.hasError) {
-                    return Text('Error : ${snapshot.error}');
-                  } else {
-                    return new Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                },
+                  },
+                ),
               )
 
             ],

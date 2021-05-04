@@ -1,5 +1,5 @@
 class PartnerModel{
-  String id,name,bio,picture;
+  String id,name,url;
 
-  PartnerModel(this.id, this.name, this.bio, this.picture);
+  PartnerModel(this.id, this.name, this.url);
 }

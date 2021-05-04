@@ -20,18 +20,21 @@ class _ProjectsState extends State<Projects> {
     final databaseReference = FirebaseDatabase.instance.reference();
     await databaseReference.child("projects").once().then((DataSnapshot dataSnapshot){
 
-      var KEYS= dataSnapshot.value.keys;
-      var DATA=dataSnapshot.value;
+      if(dataSnapshot.value!=null){
+        var KEYS= dataSnapshot.value.keys;
+        var DATA=dataSnapshot.value;
 
-      for(var individualKey in KEYS) {
-        ProjectModel projectModel = new ProjectModel(
-          individualKey,
-          DATA[individualKey]['url'],
-        );
-        print("key ${projectModel.id}");
-        list.add(projectModel);
-        piclist.add(projectModel);
+        for(var individualKey in KEYS) {
+          ProjectModel projectModel = new ProjectModel(
+            individualKey,
+            DATA[individualKey]['url'],
+            DATA[individualKey]['name'],
+          );
+          print("key ${projectModel.id}");
+          list.add(projectModel);
+          piclist.add(projectModel);
 
+        }
       }
     });
     return list;
@@ -75,6 +78,7 @@ class _ProjectsState extends State<Projects> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[200],
         key: _drawerKey,
         drawer: MenuDrawer(),
         body: SafeArea(
@@ -108,42 +112,49 @@ class _ProjectsState extends State<Projects> {
                   ],
                 ),
               ),
-              Container(
-                margin: EdgeInsets.all(10),
+
+              Expanded(
                 child: FutureBuilder<List<ProjectModel>>(
                   future: getPartnersList(),
                   builder: (context,snapshot){
                     if (snapshot.hasData) {
-                      if (snapshot.data != null) {
-                        return GridView.builder(
+                      if (snapshot.data != null && snapshot.data.length>0) {
+                        return ListView.builder(
                             shrinkWrap: true,
-                            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                                maxCrossAxisExtent: 200,
-                                childAspectRatio: 3 / 2,
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10),
                             itemCount: snapshot.data.length,
-                            itemBuilder: (BuildContext ctx, index) {
+                            itemBuilder: (context, index) {
                               return GestureDetector(
                                 onTap: (){
                                   openImage();
                                 },
                                 child: Container(
-                                  alignment: Alignment.center,
-                                  child: ClipRRect(
-                                    borderRadius:  BorderRadius.circular(15),
-                                    child: CachedNetworkImage(
-                                      imageUrl: snapshot.data[index].url,
-                                      fit: BoxFit.cover,
-                                      height: double.maxFinite,
-                                      width: double.maxFinite,
-                                      progressIndicatorBuilder: (context, url, downloadProgress) =>
-                                          Center(child: CircularProgressIndicator(),),
-                                      errorWidget: (context, url, error) => Icon(Icons.error),
-                                    ),
+                                  margin: EdgeInsets.all(5),
+                                  child: Column(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius:  BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          topRight: Radius.circular(10),
+                                        ),
+                                        child: CachedNetworkImage(
+                                          imageUrl: snapshot.data[index].url,
+                                          fit: BoxFit.cover,
+                                          height: 200,
+                                          width: double.maxFinite,
+                                          progressIndicatorBuilder: (context, url, downloadProgress) =>
+                                              Center(child: CircularProgressIndicator(),),
+                                          errorWidget: (context, url, error) => Icon(Icons.error),
+                                        ),
+                                      ),
+                                      Container(
+                                        margin:EdgeInsets.all(5),
+                                        child: Text(snapshot.data[index].name,style: TextStyle(fontSize: 17,fontWeight: FontWeight.w500),),
+                                      )
+                                    ],
                                   ),
                                   decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15)),
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10)),
                                 ),
                               );
                             });

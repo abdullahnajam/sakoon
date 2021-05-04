@@ -1,5 +1,5 @@
 class ProjectModel{
-  String id,url;
+  String id,url,name;
 
-  ProjectModel(this.id, this.url);
+  ProjectModel(this.id, this.url,this.name);
 }
