@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sakoon/components/custom_surfix_icon.dart';
 import 'package:sakoon/components/default_button.dart';
 import 'package:sakoon/components/form_error.dart';
@@ -43,8 +44,11 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
       });
   }
 
-  saveInfo(){
+  saveInfo() async{
     final scaffold = Scaffold.of(context);
+    final GoogleSignInAccount googleUser = await GoogleSignIn.;
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
     User user=FirebaseAuth.instance.currentUser;
     print(phoneNumber);
     final databaseReference = FirebaseDatabase.instance.reference();

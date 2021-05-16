@@ -157,6 +157,10 @@ class _AboutUsState extends State<AboutUs> {
                           padding: EdgeInsets.all(5),
                           child: Text('Supply')
                       ),
+                      Container(
+                        color: Color(0xfffe734c),
+                        child: Text(''),
+                      )
 
                     ],
                   ),

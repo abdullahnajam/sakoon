@@ -65,7 +65,7 @@ class _SplashScreenState extends State<SplashScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset('assets/images/logo.png',width: 150,height: 150,),
-              Text("Sukoon Zindagi Mai",style: TextStyle(fontSize: 35,fontWeight: FontWeight.w500,color: Colors.white),)
+              Text("سکون زندگی میں",style: TextStyle(fontSize: 35,fontWeight: FontWeight.w500,color: Colors.white),)
             ],
           )),
           decoration: BoxDecoration(
