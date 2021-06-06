@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sakoon/data/constants.dart';
 import 'package:sakoon/navigators/menu_drawer.dart';
-import 'package:sakoon/screens/home/homePage.dart';
+
 class AboutUs extends StatefulWidget {
   @override
   _AboutUsState createState() => _AboutUsState();
@@ -47,8 +47,6 @@ class _AboutUsState extends State<AboutUs> {
                       alignment: Alignment.center,
                       child: Text("About Us",style: TextStyle(fontWeight: FontWeight.w700,fontSize: 13),),
                     ),
-
-
                   ],
                 ),
               ),
@@ -66,7 +64,12 @@ class _AboutUsState extends State<AboutUs> {
                       Container(
                         child: Text('Our Company',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.black),),
                       ),
+
                       SizedBox(height: 5,),
+                      Container(
+                        padding: EdgeInsets.all(5),
+                        child: Text('Due to Pandemic . many of the Workers who supply things and do Maintenance at your homes are jobless. So to provide them Work , we are introducing this Sukoon app which will also help you to get in touch with one of the best workers and vendors who will provide you the work and maintenance of any type you need. If you want something to be supplied at your home. Sukoon is here for you.'),
+                      ),
                       Container(
                         padding: EdgeInsets.all(5),
                         child: Text('Sukoon.PVT LTD is a well-established company that provides services, maintenance and supply of all kinds of local & imported Glass, Aluminum, Stainless Steel, wood work, UPVC, Electric work, plumbing work . '),
@@ -157,9 +160,38 @@ class _AboutUsState extends State<AboutUs> {
                           padding: EdgeInsets.all(5),
                           child: Text('Supply')
                       ),
+                      SizedBox(height: 10,),
                       Container(
-                        color: Color(0xfffe734c),
-                        child: Text(''),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Color(0xfffe734c),
+                        ),
+                          padding: EdgeInsets.all(10),
+
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Contact Us",style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.w500),),
+                            SizedBox(height: 10,),
+                            Row(
+                              children: [
+                                Icon(Icons.email_outlined,color: Colors.white),
+                                SizedBox(width: 10,),
+                                Text("deenenterprises252@gmail.com",style: TextStyle(color: Colors.white),),
+                              ],
+                            ),
+                            SizedBox(height: 5,),
+                            Row(
+                              children: [
+                                Icon(Icons.phone_outlined,color: Colors.white),
+                                SizedBox(width: 10,),
+                                Text("03045306074",style: TextStyle(color: Colors.white)),
+                              ],
+                            ),
+                            SizedBox(height: 5,),
+
+                          ],
+                        )
                       )
 
                     ],

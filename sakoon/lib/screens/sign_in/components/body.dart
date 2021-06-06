@@ -39,7 +39,7 @@ class _BodyState extends State<Body> {
   String _message = 'Log in/out by pressing the buttons below.';
   Future<Null> _login() async {
     final FacebookLoginResult result =
-    await facebookSignIn.logInWithReadPermissions(['email']);
+    await facebookSignIn.logIn(['email']);
 
     switch (result.status) {
       case FacebookLoginStatus.loggedIn:
@@ -67,7 +67,7 @@ class _BodyState extends State<Body> {
     print("here");
     // Trigger the sign-in flow
     final FirebaseAuth _fAuth = FirebaseAuth.instance;
-    final FacebookLoginResult facebookLoginResult = await facebookSignIn.logInWithReadPermissions(['email']);
+    final FacebookLoginResult facebookLoginResult = await facebookSignIn.logIn(['email']);
     FacebookAccessToken facebookAccessToken = facebookLoginResult.accessToken;
     AuthCredential authCredential = FacebookAuthProvider.credential(facebookAccessToken.token);//accessToken: facebookAccessToken.token);
     User fbUser;

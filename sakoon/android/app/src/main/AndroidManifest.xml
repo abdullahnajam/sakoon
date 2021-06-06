@@ -12,8 +12,8 @@
     <uses-feature android:name="android.hardware.location.gps"  />
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="sakoon"
-        android:icon="@mipmap/ic_launcher">
+        android:label="Sukoon"
+        android:icon="@mipmap/launcher_icon">
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBhCef5WuAuPKRVoPuWQASD6avTs16x7uE"/>
         <activity

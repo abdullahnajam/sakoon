@@ -46,9 +46,9 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
 
   saveInfo() async{
     final scaffold = Scaffold.of(context);
-    final GoogleSignInAccount googleUser = await GoogleSignIn.;
+    /*final GoogleSignInAccount googleUser = await GoogleSignIn;
     final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
+        await googleUser.authentication;*/
     User user=FirebaseAuth.instance.currentUser;
     print(phoneNumber);
     final databaseReference = FirebaseDatabase.instance.reference();

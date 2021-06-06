@@ -57,13 +57,13 @@ class _MenuDrawerState extends State<MenuDrawer> {
                   Container(height: 30),
                   //Image.asset('assets/images/background.jpg'),
                   Container(height: 7),
-                  Text(name, style: MyText.body2(context).copyWith(
+                  /*Text(name, style: MyText.body2(context).copyWith(
                       color: Colors.black, fontWeight: FontWeight.w500
                   )),
                   Container(height: 2),
                   Text(email, style: MyText.caption(context).copyWith(
                       color: Colors.black, fontWeight: FontWeight.w500
-                  ))
+                  ))*/
                 ],
               ),
             ),

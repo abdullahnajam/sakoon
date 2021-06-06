@@ -20,6 +20,7 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+  User googleUser;
   getUserData() async{
     print("func");
     User user= FirebaseAuth.instance.currentUser;
@@ -38,7 +39,9 @@ class _BodyState extends State<Body> {
   static final FacebookLogin facebookSignIn = new FacebookLogin();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
-  Future<String> signInWithGoogle() async {
+
+
+  Future<User> signInWithGoogle() async {
     final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
     final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
 
@@ -55,9 +58,13 @@ class _BodyState extends State<Body> {
 
     final User currentUser = await _auth.currentUser;
     assert(user.uid == currentUser.uid);
-    print(user.uid);
+    print("google email id ${user.email}");
 
-    return 'signInWithGoogle succeeded: $user';
+    setState(() {
+      googleUser=user;
+    });
+
+    return user;
   }
 
   void signOutGoogle() async{
@@ -67,7 +74,7 @@ class _BodyState extends State<Body> {
   }
   Future<Null> _login() async {
     final FacebookLoginResult result =
-    await facebookSignIn.logInWithReadPermissions(['email']);
+    await facebookSignIn.logIn(['email']);
 
     switch (result.status) {
       case FacebookLoginStatus.loggedIn:
@@ -95,7 +102,7 @@ class _BodyState extends State<Body> {
     print("here");
     // Trigger the sign-in flow
     final FirebaseAuth _fAuth = FirebaseAuth.instance;
-    final FacebookLoginResult facebookLoginResult = await facebookSignIn.logInWithReadPermissions(['email']);
+    final FacebookLoginResult facebookLoginResult = await facebookSignIn.logIn(['email']);
     if (facebookLoginResult.status == FacebookLoginStatus.loggedIn){
       FacebookAccessToken facebookAccessToken = facebookLoginResult.accessToken;
       AuthCredential authCredential = FacebookAuthProvider.credential(facebookAccessToken.token);//accessToken: facebookAccessToken.token);
@@ -176,8 +183,6 @@ class _BodyState extends State<Body> {
                             } else {
                               print("else");
                               getUserData();
-                              /*Navigator.pushReplacement(
-                                  context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));*/
                             }
                           });
                         }).catchError((onError){
