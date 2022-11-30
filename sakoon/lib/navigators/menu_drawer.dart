@@ -16,23 +16,22 @@ class MenuDrawer extends StatefulWidget {
 
 class _MenuDrawerState extends State<MenuDrawer> {
   String name=" ",email=" ";
-  getUserData() async{
-    User user= FirebaseAuth.instance.currentUser;
-    final userReference = FirebaseDatabase.instance.reference();
-    await userReference.child("user").child(user.uid).once().then((DataSnapshot dataSnapshot){
-      if(dataSnapshot.value == null){
-        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => CompleteProfileScreen()));
-      }
-      else{
-        setState(() {
-          email=dataSnapshot.value['email'];
-          name="${dataSnapshot.value['firstName']} ${dataSnapshot.value['lastName']}";
-        });
+  Future getUserData() async{
+    final ref = FirebaseDatabase.instance.ref('user/${FirebaseAuth.instance.currentUser.uid}');
+    DatabaseEvent event = await ref.once();
 
-      }
+    if (event.snapshot.value!=null) {
+      Map<dynamic, dynamic> values = event.snapshot.value;
+      print('service data ${values['firstName']}');
+      setState(() {
+        name=' ${values['firstName']}  ${values['lastName']}';
+        email=' ${values['email']}';
+      });
 
-
-    });
+      print('user val ${event.snapshot.value}');
+    } else {
+      print('No data available.');
+    }
   }
 
   @override
@@ -57,13 +56,13 @@ class _MenuDrawerState extends State<MenuDrawer> {
                   Container(height: 30),
                   //Image.asset('assets/images/background.jpg'),
                   Container(height: 7),
-                  /*Text(name, style: MyText.body2(context).copyWith(
+                  Text(name, style: MyText.body2(context).copyWith(
                       color: Colors.black, fontWeight: FontWeight.w500
                   )),
                   Container(height: 2),
                   Text(email, style: MyText.caption(context).copyWith(
                       color: Colors.black, fontWeight: FontWeight.w500
-                  ))*/
+                  ))
                 ],
               ),
             ),

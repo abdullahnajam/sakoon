@@ -16,24 +16,10 @@ class SignForm extends StatefulWidget {
 class _SignFormState extends State<SignForm> {
 
   final _formKey = GlobalKey<FormState>();
-  String email;
-  String password;
-  bool remember = false;
-  final List<String> errors = [];
+  var _emailController=TextEditingController();
+  var _passwordController=TextEditingController();
 
-  void addError({String error}) {
-    if (!errors.contains(error))
-      setState(() {
-        errors.add(error);
-      });
-  }
 
-  void removeError({String error}) {
-    if (errors.contains(error))
-      setState(() {
-        errors.remove(error);
-      });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,20 +46,15 @@ class _SignFormState extends State<SignForm> {
               )
             ],
           ),
-          FormError(errors: errors),
           SizedBox(height: getProportionateScreenHeight(20)),
-          SizedBox(height: SizeConfig.screenHeight * 0.1),
           DefaultButton(
             text: "Continue",
             press: () async{
               if (_formKey.currentState.validate()) {
-                _formKey.currentState.save();
-                // if all are valid then go to success screen
-                KeyboardUtil.hideKeyboard(context);
                 try {
-                  UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-                      email: email,
-                      password: password
+                  await FirebaseAuth.instance.signInWithEmailAndPassword(
+                      email: _emailController.text.trim(),
+                      password: _passwordController.text
                   ).whenComplete(() {
                     FirebaseAuth.instance
                         .authStateChanges()
@@ -106,22 +87,11 @@ class _SignFormState extends State<SignForm> {
   TextFormField buildPasswordFormField() {
     return TextFormField(
       obscureText: true,
-      onSaved: (newValue) => password = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty) {
-          removeError(error: kPassNullError);
-        } else if (value.length >= 8) {
-          removeError(error: kShortPassError);
-        }
-        return null;
-      },
+
+      controller: _passwordController,
       validator: (value) {
-        if (value.isEmpty) {
-          addError(error: kPassNullError);
-          return "";
-        } else if (value.length < 8) {
-          addError(error: kShortPassError);
-          return "";
+        if (value == null || value.isEmpty) {
+          return 'Please enter some text';
         }
         return null;
       },
@@ -161,26 +131,13 @@ class _SignFormState extends State<SignForm> {
   TextFormField buildEmailFormField() {
     return TextFormField(
       keyboardType: TextInputType.emailAddress,
-      onSaved: (newValue) => email = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty) {
-          removeError(error: kEmailNullError);
-        } else if (emailValidatorRegExp.hasMatch(value)) {
-          removeError(error: kInvalidEmailError);
-        }
-        return null;
-      },
       validator: (value) {
-        if (value.isEmpty) {
-          addError(error: kEmailNullError);
-          return "";
-        } else if (!emailValidatorRegExp.hasMatch(value)) {
-          addError(error: kInvalidEmailError);
-          return "";
+        if (value == null || value.isEmpty) {
+          return 'Please enter some text';
         }
         return null;
       },
-
+      controller: _emailController,
       decoration: InputDecoration(
         contentPadding: EdgeInsets.all(15),
         focusedBorder: OutlineInputBorder(

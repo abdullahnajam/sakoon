@@ -3,13 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:sakoon/api/auth_service.dart';
 import 'package:sakoon/components/no_account_text.dart';
 import 'package:sakoon/components/socal_card.dart';
 import 'package:sakoon/screens/complete_profile/complete_profile_screen.dart';
 import 'package:sakoon/screens/home/homePage.dart';
+import '../../../dailogs/custom_alert_dialogs.dart';
 import '../../../data/size_config.dart';
 import 'sign_form.dart';
 import 'dart:async';
@@ -20,91 +21,19 @@ class Body extends StatefulWidget {
 }
 class _BodyState extends State<Body> {
   getUserData() async{
-    print("func");
-    User user= FirebaseAuth.instance.currentUser;
-    final userReference = FirebaseDatabase.instance.reference();
-    await userReference.child("user").child(user.uid).once().then((DataSnapshot dataSnapshot){
-      if(dataSnapshot.value == null){
-        print("complete");
-        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => CompleteProfileScreen()));
-      }
-      else{
-        print("home");
-        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));
-      }
-    });
-  }
-  String name,image;
-  static final FacebookLogin facebookSignIn = new FacebookLogin();
-  String _message = 'Log in/out by pressing the buttons below.';
-  Future<Null> _login() async {
-    final FacebookLoginResult result =
-    await facebookSignIn.logIn(['email']);
+    final ref = FirebaseDatabase.instance.ref('user/${ FirebaseAuth.instance.currentUser.uid}');
+    DatabaseEvent event = await ref.once();
 
-    switch (result.status) {
-      case FacebookLoginStatus.loggedIn:
-        final FacebookAccessToken accessToken = result.accessToken;
-        print('''
-         Logged in!
-         
-         Token: ${accessToken.token}
-         User id: ${accessToken.userId}
-         Expires: ${accessToken.expires}
-         Permissions: ${accessToken.permissions}
-         Declined permissions: ${accessToken.declinedPermissions}
-         ''');
-        break;
-      case FacebookLoginStatus.cancelledByUser:
-        print('Login cancelled by the user.');
-        break;
-      case FacebookLoginStatus.error:
-        print('Something went wrong with the login process.\n'
-            'Here\'s the error Facebook gave us: ${result.errorMessage}');
-        break;
+    if (event.snapshot.value!=null) {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+
+    } else {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => CompleteProfileScreen()));
     }
-  }
-  Future<User> signInWithFacebook() async {
-    print("here");
-    // Trigger the sign-in flow
-    final FirebaseAuth _fAuth = FirebaseAuth.instance;
-    final FacebookLoginResult facebookLoginResult = await facebookSignIn.logIn(['email']);
-    FacebookAccessToken facebookAccessToken = facebookLoginResult.accessToken;
-    AuthCredential authCredential = FacebookAuthProvider.credential(facebookAccessToken.token);//accessToken: facebookAccessToken.token);
-    User fbUser;
-    fbUser = (await _fAuth.signInWithCredential(authCredential)).user;
-    //Token: ${accessToken.token}
+
   }
 
 
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn googleSignIn = GoogleSignIn();
-  FirebaseUser user;
-
-  Future<String> signInWithGoogle() async {
-    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
-    final GoogleSignInAuthentication googleSignInAuthentication =
-    await googleSignInAccount.authentication;
-
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
-      accessToken: googleSignInAuthentication.accessToken,
-      idToken: googleSignInAuthentication.idToken,
-    );
-
-    final User user = (await _auth.signInWithCredential(credential)).user;
-    assert(!user.isAnonymous);
-    assert(await user.getIdToken() != null);
-    final User currentUser = await _auth.currentUser;
-    assert(user.uid == currentUser.uid);
-    print(user.uid);
-
-    return 'signInWithGoogle succeeded: $user';
-  }
-
-  void signOutGoogle() async{
-    await googleSignIn.signOut();
-
-    print("User Sign Out");
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -155,38 +84,22 @@ class _BodyState extends State<Body> {
                     SocalCard(
                       icon: "assets/images/google.png",
                       press: () {
-                        signInWithGoogle().whenComplete(() {
-                          FirebaseAuth.instance.authStateChanges().listen((User user) {
-                            if (user == null) {
-                              print('User is currently signed out!');
-                            } else {
-                              print("else");
-                              getUserData();
-                              /*Navigator.pushReplacement(
-                                  context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));*/
-                            }
-                          });
-                        }).catchError((onError){
-                          print(onError.toString());
+                        AuthService.signInWithGoogle().then((value){
+                          getUserData();
+                        }).onError((error, stackTrace){
+                          CustomAlertDialogs.showFailuresDailog(context,error.toString());
                         });
+
                       },
                     ),
                     SocalCard(
                       icon: "assets/images/facebook.png",
                       press:() {
-                        signInWithFacebook().whenComplete(() {
-                          FirebaseAuth.instance.authStateChanges().listen((User user) {
-                            if (user == null) {
-                              print('User is currently signed out!');
-                            } else {
-                              print("else");
-                              getUserData();
-                              /*Navigator.pushReplacement(
-                                  context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));*/
-                            }
-                          });
-                        }).catchError((onError){
-                          print(onError.toString());
+                        AuthService.signInWithFacebook().then((value){
+                          getUserData();
+                        }).onError((error, stackTrace){
+                          print('error ${error.toString()}');
+                          CustomAlertDialogs.showFailuresDailog(context,error.toString());
                         });
                       },
                     ),

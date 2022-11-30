@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:sakoon/components/default_button.dart';
 import 'package:sakoon/data/constants.dart';
@@ -17,6 +18,8 @@ import 'package:sakoon/navigators/menu_drawer.dart';
 import 'package:sakoon/screens/complete_profile/complete_profile_screen.dart';
 import 'package:sakoon/screens/services_list.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
+import '../../api/location.dart';
 
 class HomePage extends StatefulWidget {
 static String routename='/homepage';
@@ -35,43 +38,29 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
   getUserData() async{
-    User user= FirebaseAuth.instance.currentUser;
-    final userReference = FirebaseDatabase.instance.reference();
-    await userReference.child("user").child(user.uid).once().then((DataSnapshot dataSnapshot){
-      if(dataSnapshot.value == null){
-        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => CompleteProfileScreen()));
-      }
-      else{
-        setState(() {
-          location=dataSnapshot.value['address'];
-          username=dataSnapshot.value['firstName'];
-          userData=new UserData(
-            user.uid,
-            dataSnapshot.value['firstName'],
-            dataSnapshot.value['lastName'],
-            dataSnapshot.value['phoneNumber'],
-            dataSnapshot.value['email'],
-            dataSnapshot.value['address'],
-          );
-        });
+    final ref = FirebaseDatabase.instance.ref('user/${ FirebaseAuth.instance.currentUser.uid}');
+    DatabaseEvent event = await ref.once();
+    print('user ref ${event.snapshot.value}');
+    if (event.snapshot.value!=null) {
+      Map<dynamic, dynamic> values = event.snapshot.value;
+      setState(() {
+        username='${values['firstName']}  ${values['lastName']}';
+        location='${values['address']}';
 
-      }
+        userData=UserData(FirebaseAuth.instance.currentUser.uid, values['firstName'], values['lastName'], values['phoneNumber'], values['email'], values['address']);
+      });
 
-
-    });
+    } else {
+      print('No data available.');
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (BuildContext context) => CompleteProfileScreen()));
+    }
   }
 
-  getUser() async{
-    User user= FirebaseAuth.instance.currentUser;
-    print("user id ${user.uid}");
-    setState(() {
-      username=user.uid;
-    });
-  }
+
   @override
   void initState() {
     super.initState();
-    print(totalServicesAvailable.length);
     getUserData();
   }
 
@@ -93,63 +82,74 @@ class _HomePageState extends State<HomePage> {
 
 
   Future<List<BannerModel>> getBanner() async {
-    List<BannerModel> list=new List();
-    final databaseReference = FirebaseDatabase.instance.reference();
-    await databaseReference.child("banner").once().then((DataSnapshot dataSnapshot){
-
-      var KEYS= dataSnapshot.value.keys;
-      var DATA=dataSnapshot.value;
-
-      for(var individualKey in KEYS) {
-        BannerModel bannerModel = new BannerModel(
-          individualKey,
-          DATA[individualKey]['url'],
+    List<BannerModel> list=[];
+    final ref = FirebaseDatabase.instance.ref("banner");
+    DatabaseEvent event = await ref.once();
+    if(event.snapshot.value!=null){
+      Map<dynamic, dynamic> values = event.snapshot.value;
+      values.forEach((key, values) {
+        BannerModel _banner=BannerModel(
+          key,
+          values['url'],
         );
-        print("key ${bannerModel.id}");
-        list.add(bannerModel);
+        list.add(_banner);
+      });
+    }
 
-      }
-    });
     return list;
   }
 
   Future<List<Service>> getServices() async {
-    List<Service> list=new List();
-    final databaseReference = FirebaseDatabase.instance.reference();
-    await databaseReference.child("services").once().then((DataSnapshot dataSnapshot){
-
-      var KEYS= dataSnapshot.value.keys;
-      var DATA=dataSnapshot.value;
-
-      for(var individualKey in KEYS) {
-        Service service = new Service(
-            individualKey,
-            DATA[individualKey]['name'],
-            DATA[individualKey]['image'],
-            DATA[individualKey]['count'],
+    List<Service> list=[];
+    final ref = FirebaseDatabase.instance.ref("services");
+    DatabaseEvent event = await ref.once();
+    if(event.snapshot.value!=null){
+      Map<dynamic, dynamic> values = event.snapshot.value;
+      values.forEach((key, values) {
+        Service _service=Service(
+          key,
+          values['name'],
+          values['image'],
+          values['count'],
         );
-        print("key ${service.id}");
-        list.add(service);
-
-      }
-    });
-    return list;
-  }
-  setLocation()async{
-    LocationResult result = await showLocationPicker(
-      context,
-      kGoogleApiKey,
-    );
-    if(result!=null){
-      setState(() {
-        location=result.address;
-      });
-      User user= FirebaseAuth.instance.currentUser;
-      final databaseReference = FirebaseDatabase.instance.reference();
-      databaseReference.child("user").child(user.uid).update({
-        'address': location,
+        if(values['sub_services']==null){
+          _service.count='0';
+        }
+        else
+          _service.count=values['sub_services'].length.toString();
+        list.add(_service);
       });
     }
+    return list;
+  }
+
+
+  setLocation()async{
+    List coordinates=await getUserCurrentCoordinates();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PlacePicker(
+          apiKey: kGoogleApiKey,
+          onPlacePicked: (result) {
+            setState(() {
+              location=result.formattedAddress;
+            });
+            User user= FirebaseAuth.instance.currentUser;
+            final databaseReference = FirebaseDatabase.instance.reference();
+            databaseReference.child("user").child(user.uid).update({
+              'address': location,
+            });
+
+
+            Navigator.of(context).pop();
+          },
+          initialPosition: LatLng(coordinates[0], coordinates[1]),
+          useCurrentLocation: true,
+        ),
+      ),
+    );
+
   }
 
   @override
@@ -163,7 +163,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               Container(
                 padding: EdgeInsets.only(left: 10,right: 10,bottom: 10,top: 35),
-                height: MediaQuery.of(context).size.height*0.45,
+                height: MediaQuery.of(context).size.height*0.4,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(40),
@@ -204,6 +204,7 @@ class _HomePageState extends State<HomePage> {
                           },
                           child: Container(
                             padding: EdgeInsets.only(left: 15,right: 15),
+                            margin: EdgeInsets.only(top: 10),
                             height: 40,
                             child: Row(
                               children: [
@@ -227,8 +228,8 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           Row(
                             children: [
-                              Icon(Icons.place_outlined,color: Colors.white,size: 20,),
-                              Text("${location}",style: TextStyle(color: Colors.white),maxLines: 1,)
+                              Icon(Icons.place_outlined,color: Colors.white,size: 12,),
+                              Expanded(child: Text("${location}",style: TextStyle(color: Colors.white,fontSize: 11),maxLines: 1,))
                             ],
                           ),
                           Text("HOME SERVICES AT YOUR DOORSTEP",style: TextStyle(color: Colors.white,fontSize: 20,fontWeight: FontWeight.w900),),
@@ -237,27 +238,14 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     SizedBox(height: 15,),
-                    Container(
-                      height: 45,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10)
-                      ),
-                      child: Row(
-                        children: [
-                          SizedBox(width: 10,),
-                          Icon(Icons.search,color: Colors.grey,),
-                          Text("Search")
-                        ],
-                      ),
-                    )
+
                   ],
                 ),
               ),
               Align(
                 child: Container(
                   padding: EdgeInsets.only(left: 15,right: 15),
-                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.35),
+                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.25),
                   child: FutureBuilder<List<BannerModel>>(
                     future: getBanner(),
                     builder: (context, snapshot) {
@@ -342,8 +330,8 @@ class _HomePageState extends State<HomePage> {
             child: Text("Which service do you need?",style: TextStyle(color: kPrimaryColor,fontSize: 20,fontWeight: FontWeight.w900),),
 
           ),
-          Container(
-            height: MediaQuery.of(context).size.height*0.39,
+          Expanded(
+            //height: MediaQuery.of(context).size.height*0.39,
             child: FutureBuilder<List<Service>>(
               future: getServices(),
               builder: (context, snapshot) {
@@ -355,37 +343,38 @@ class _HomePageState extends State<HomePage> {
                       itemCount: snapshot.data.length,
                       itemBuilder: (BuildContext context,int index){
                         return GestureDetector(
-                          onTap: () {
-                            if(location=="My Location"){
+                          onTap: () async{
+                            if(location=='My Location'){
                               setLocation();
                             }
                             else{
-                              final scaffold = Scaffold.of(context);
                               User user= FirebaseAuth.instance.currentUser;
-                              final databaseReference = FirebaseDatabase.instance.reference();
-                              databaseReference.child("activities").push().set({
-                                'name': "${userData.firstName} ${userData.lastName}",
-                                'email': userData.email,
-                                'phone': userData.phoneNumber,
-                                'address': location,
-                                'user': user.uid,
-                                'serviceTapped': snapshot.data[index].name,
-                                'dateTime': DateFormat.yMd().add_jm().format(DateTime.now())
-                              });
-                              var data={
+                              final databaseReference = FirebaseDatabase.instance.ref();
+                              try{
+                                databaseReference.child("activities").push().set({
+                                  'name': "${userData.firstName} ${userData.lastName}",
+                                  'email': userData.email,
+                                  'phone': userData.phoneNumber,
+                                  'address': location,
+                                  'user': user.uid,
+                                  'serviceTapped': snapshot.data[index].name,
+                                  'dateTime': DateFormat.yMd().add_jm().format(DateTime.now())
+                                }).then((value){
+                                  print('inserted');
+                                }).onError((error, stackTrace){
+                                  print('set error ${error.toString()}');
+                                });
+                              }
+                              catch(e){
+                                print('set error ${e.toString()}');
+                              }
+                            var data={
                                 "message": '"${userData.firstName} ${userData.lastName} has clicked on ${snapshot.data[index].name}',
 
 
                               };
-                              http.post('https://sukoonadmin.000webhostapp.com/Notification.php', body: data).then((res) {
-                                print('${res.statusCode}+${res.body}');
-
-                              }).catchError((err) {
-                                print("error"+err.toString());
-
-                              });
-                              Navigator.push(
-                                  context, MaterialPageRoute(builder: (BuildContext context) => ServicesCheckList(snapshot.data[index],location,userData)));
+                              //await http.post(Uri.parse('https://sukoonadmin.000webhostapp.com/Notification.php'), body: data);
+                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ServicesCheckList(snapshot.data[index],location,userData)));
                             }
 
                           },

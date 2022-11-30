@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sakoon/components/default_button.dart';
+import 'package:sakoon/dailogs/custom_alert_dialogs.dart';
 import 'package:sakoon/data/constants.dart';
 import 'package:sakoon/model/services.dart';
 import 'package:sakoon/model/sub_services.dart';
@@ -31,7 +32,7 @@ class _ServiceCheckListState extends State<ServicesCheckList> {
 
   List<bool> isCheck=[];
   List<SubService> serviceItems=[];
-  final databaseReference = FirebaseDatabase.instance.reference();
+  final databaseReference = FirebaseDatabase.instance.ref();
 
   checkSelected(){
     int selected=0;
@@ -51,7 +52,7 @@ class _ServiceCheckListState extends State<ServicesCheckList> {
       });
     }
   }
-  submitData(){
+  Future submitData()async{
     List<String> checkedItems=[];
     for(int i=0;i<isCheck.length;i++){
       if(isCheck[i]){
@@ -70,192 +71,47 @@ class _ServiceCheckListState extends State<ServicesCheckList> {
       'phone': widget.userData.phoneNumber,
       'time': DateFormat.yMd().add_jm().format(DateTime.now()),
       'address':widget.location
-    }).then((value) {
+    }).then((value) async{
       var data={
         "message": '"${widget.userData.firstName} ${widget.userData.lastName} has submitted list of services for ${widget._service.name}',
 
 
       };
-      http.post('https://sukoonadmin.000webhostapp.com/Notification.php', body: data).then((res) {
+      /*await http.post(Uri.parse('https://sukoonadmin.000webhostapp.com/Notification.php'), body: data).then((res) {
         print('${res.statusCode}+${res.body}');
 
       }).catchError((err) {
         print("error"+err.toString());
 
-      });
-      _showSuccessDailog();
+      });*/
+      CustomAlertDialogs.showServiceSubmitDialog(context, "Your request has been submitted");
 
     }).catchError((onError){
-      _showFailuresDailog(onError.toString());
+      CustomAlertDialogs.showFailuresDailog(context,onError.toString());
     });
   }
 
-  Future<void> _showSuccessDailog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: const BorderRadius.all(
-              Radius.circular(30.0),
-            ),
-          ),
-          insetAnimationDuration: const Duration(seconds: 1),
-          insetAnimationCurve: Curves.fastOutSlowIn,
-          elevation: 2,
 
-          child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30)
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  child: Lottie.asset(
-                    'assets/json/success.json',
-                    width: 200,
-                    height: 200,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Container(
-                    child: Column(
-                      children: [
-                        Text("Successful",style: TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w400),),
-                        Text("Your request has been submitted",style: TextStyle(fontSize: 13,fontWeight: FontWeight.w300),),
-                      ],
-                    )
-
-                ),
-                Container(
-                  margin: EdgeInsets.only(top:20,left: 20,right: 20,bottom: 20),
-                  child: Divider(color: Colors.grey,),
-                ),
-                GestureDetector(
-                  onTap: (){
-                    Navigator.push(
-                        context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    width: double.maxFinite,
-                    height: 40,
-                    margin: EdgeInsets.only(left: 40,right: 40),
-                    child:Text("OKAY",style: TextStyle(color:Colors.white,fontSize: 15,fontWeight: FontWeight.w400),),
-                    decoration: BoxDecoration(
-                        color: Colors.green,
-                        borderRadius: BorderRadius.circular(30)
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 15,
-                )
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> _showFailuresDailog(String error) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: const BorderRadius.all(
-              Radius.circular(30.0),
-            ),
-          ),
-          insetAnimationDuration: const Duration(seconds: 1),
-          insetAnimationCurve: Curves.fastOutSlowIn,
-          elevation: 2,
-
-          child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30)
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  child: Lottie.asset(
-                    'assets/json/error.json',
-                    width: 200,
-                    height: 200,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Container(
-                    child: Column(
-                      children: [
-                        Text("Error",style: TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w400),),
-                        Text(error,textAlign: TextAlign.center,style: TextStyle(fontSize: 13,fontWeight: FontWeight.w300),),
-                      ],
-                    )
-
-                ),
-                Container(
-                  margin: EdgeInsets.only(top:20,left: 20,right: 20,bottom: 20),
-                  child: Divider(color: Colors.grey,),
-                ),
-                GestureDetector(
-                  onTap: (){
-                    Navigator.push(
-                        context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    width: double.maxFinite,
-                    height: 40,
-                    margin: EdgeInsets.only(left: 40,right: 40),
-                    child:Text("OKAY",style: TextStyle(color:Colors.white,fontSize: 15,fontWeight: FontWeight.w400),),
-                    decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(30)
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 15,
-                )
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   Future<List<SubService>> getServiceList() async {
     List<SubService> list=[];
-    await databaseReference.child("services").child(widget._service.id).child("sub_services").once().then((DataSnapshot dataSnapshot){
-      if(dataSnapshot.value!=null){
-        var KEYS= dataSnapshot.value.keys;
-        var DATA=dataSnapshot.value;
-        if(KEYS!=null){
-          for(var individualKey in KEYS){
-            SubService _subService = new SubService(
-                individualKey,
-                DATA[individualKey]['name']
-            );
-            print("key ${_subService.id}");
-            list.add(_subService);
-            serviceItems.add(_subService);
-            isCheck.add(false);
-          }
-        }
-      }
+    final ref = FirebaseDatabase.instance.ref("services/${widget._service.id}/sub_services");
+    DatabaseEvent event = await ref.once();
+    if(event.snapshot.value!=null){
+      Map<dynamic, dynamic> values = event.snapshot.value;
+      values.forEach((key, values) {
 
+        SubService _subService=SubService(
+          key,
+          values['name'],
+        );
+        list.add(_subService);
+        serviceItems.add(_subService);
+        isCheck.add(false);
+        print('lists ${serviceItems.last.name}');
+      });
+    }
 
-    });
 
     return list;
   }
@@ -265,31 +121,7 @@ class _ServiceCheckListState extends State<ServicesCheckList> {
         body: SafeArea(
           child: Stack(
             children: [
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: AnimatedContainer(
-                    height: isSelected ? 60.0 : 0.0,
-                    duration: const Duration(seconds: 1),
-                    curve: Curves.fastOutSlowIn,
-                    child: GestureDetector(
-                      onTap: (){
-                        submitData();
-                      },
-                      child: Container(
-                        height: 40,
-                        width: double.maxFinite,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: kPrimaryColor,
-                          borderRadius: BorderRadius.circular(20),
 
-                        ),
-                        child: Text("Submit",style: TextStyle(color: Colors.white,fontSize: 18),),
-                        margin: EdgeInsets.only(left: 20,right: 20,bottom: 15),
-                      ),
-                    )
-                ),
-              ),
               Column(
                 children: [
                   Container(
@@ -320,52 +152,81 @@ class _ServiceCheckListState extends State<ServicesCheckList> {
                       ],
                     ),
                   ),
-                  FutureBuilder<List<SubService>>(
-                    future: getServiceList(),
-                    builder: (context,snapshot){
-                      if (snapshot.hasData) {
-                        if (snapshot.data != null) {
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            //scrollDirection: Axis.horizontal,
-                            itemCount: snapshot.data.length,
-                            itemBuilder: (BuildContext context,int index){
-                              return CheckboxListTile(
-                                  title: Text(snapshot.data[index].name),
-                                  value: isCheck[index],
-                                  activeColor: kPrimaryColor,
-                                  onChanged: (bool value){
-                                    setState(() {
-                                      print("index $index");
-                                      isCheck[index]=value;
+                  Expanded(
+                    child: FutureBuilder<List<SubService>>(
+                      future: getServiceList(),
+                      builder: (context,snapshot){
+                        if (snapshot.hasData) {
+                          if (snapshot.data != null) {
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: snapshot.data.length,
+                              itemBuilder: (BuildContext context,int index){
+                                return CheckboxListTile(
+                                    title: Text(snapshot.data[index].name),
+                                    value: isCheck[index],
+                                    activeColor: kPrimaryColor,
+                                    onChanged: (bool value){
+                                      setState(() {
+                                        print("index $index");
+                                        isCheck[index]=value;
 
-                                    });
-                                    checkSelected();
-                                  }
-                              );
-                            },
-                          );
+                                      });
+                                      checkSelected();
+                                    }
+                                );
+                              },
+                            );
+                          }
+                          else {
+                            return new Center(
+                              child: Container(
+                                  child: Text("no data")
+                              ),
+                            );
+                          }
                         }
-                        else {
+                        else if (snapshot.hasError) {
+                          return Text('Error : ${snapshot.error}');
+                        } else {
                           return new Center(
-                            child: Container(
-                                child: Text("no data")
-                            ),
+                            child: CircularProgressIndicator(),
                           );
                         }
-                      }
-                      else if (snapshot.hasError) {
-                        return Text('Error : ${snapshot.error}');
-                      } else {
-                        return new Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                    },
-                  )
+                      },
+                    ),
+                  ),
+                  if(isSelected)
+                  SizedBox(height: 60,)
 
                 ],
-              )
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child:  AnimatedContainer(
+                    color: Colors.white,
+                    height: isSelected ? 60.0 : 0.0,
+                    duration: const Duration(seconds: 1),
+                    curve: Curves.fastOutSlowIn,
+                    child: GestureDetector(
+                      onTap: (){
+                        submitData();
+                      },
+                      child: Container(
+                        height: 40,
+                        width: double.maxFinite,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: kPrimaryColor,
+                          borderRadius: BorderRadius.circular(20),
+
+                        ),
+                        child: Text("Submit",style: TextStyle(color: Colors.white,fontSize: 18),),
+                        margin: EdgeInsets.only(left: 20,right: 20,bottom: 15),
+                      ),
+                    )
+                ),
+              ),
             ],
           ),
         )

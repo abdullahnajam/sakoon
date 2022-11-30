@@ -17,18 +17,17 @@ class DefaultButton extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       height: getProportionateScreenHeight(56),
-      child: FlatButton(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        color: kPrimaryColor,
-        onPressed: press,
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: getProportionateScreenWidth(18),
-            color: Colors.white,
+      child: InkWell(
+        onTap: press,
+        child: Container(
+          decoration: BoxDecoration(
+            color: kPrimaryColor,
+            borderRadius: BorderRadius.circular(30)
           ),
+          alignment: Alignment.center,
+          child: Text(text,style: TextStyle(color: Colors.white,fontSize: 18),),
         ),
-      ),
+      )
     );
   }
 }

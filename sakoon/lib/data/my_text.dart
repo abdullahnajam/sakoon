@@ -3,46 +3,44 @@ import 'package:flutter/material.dart';
 
 class MyText{
 
-  static TextStyle display4(BuildContext context){
-    return Theme.of(context).textTheme.display4;
-  }
+
 
   static TextStyle display3(BuildContext context){
-    return Theme.of(context).textTheme.display3;
+    return Theme.of(context).textTheme.displayLarge;
   }
 
   static TextStyle display2(BuildContext context){
-    return Theme.of(context).textTheme.display2;
+    return Theme.of(context).textTheme.displayMedium;
   }
 
   static TextStyle display1(BuildContext context){
-    return Theme.of(context).textTheme.display1;
+    return Theme.of(context).textTheme.displaySmall;
   }
 
   static TextStyle headline(BuildContext context){
-    return Theme.of(context).textTheme.headline;
+    return Theme.of(context).textTheme.headlineLarge;
   }
 
   static TextStyle title(BuildContext context){
-    return Theme.of(context).textTheme.title;
+    return Theme.of(context).textTheme.titleMedium;
   }
 
   static TextStyle medium(BuildContext context){
-    return Theme.of(context).textTheme.subhead.copyWith(
+    return Theme.of(context).textTheme.headlineSmall.copyWith(
       fontSize: 18,
     );
   }
 
   static TextStyle subhead(BuildContext context){
-    return Theme.of(context).textTheme.subhead;
+    return Theme.of(context).textTheme.headlineSmall;
   }
 
   static TextStyle body2(BuildContext context){
-    return Theme.of(context).textTheme.body2;
+    return Theme.of(context).textTheme.bodySmall;
   }
 
   static TextStyle body1(BuildContext context){
-    return Theme.of(context).textTheme.body1;
+    return Theme.of(context).textTheme.bodyMedium;
   }
 
   static TextStyle caption(BuildContext context){
@@ -54,7 +52,7 @@ class MyText{
   }
 
   static TextStyle subtitle(BuildContext context){
-    return Theme.of(context).textTheme.subtitle;
+    return Theme.of(context).textTheme.subtitle1;
   }
 
   static TextStyle overline(BuildContext context){

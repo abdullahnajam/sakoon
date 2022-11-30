@@ -33,17 +33,27 @@ class _SplashScreenState extends State<SplashScreen> {
     return Timer(_duration, navigationPage);
   }
   void navigationPage() {
-    FirebaseAuth.instance.authStateChanges().listen((User user) {
+    if(FirebaseAuth.instance.currentUser!=null){
+      print('g auth user Id ${FirebaseAuth.instance.currentUser.uid}');
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+    }
+    else{
+      print('no user logged in');
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (BuildContext context) => SignInScreen()));
+    }
+    /*FirebaseAuth.instance.authStateChanges().listen((User user) {
       if (user == null) {
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (BuildContext context) => SignInScreen()));
       } else {
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (BuildContext context) => HomePage()));
-        /*Navigator.pushReplacement(
-                                  context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));*/
+        *//*Navigator.pushReplacement(
+                                  context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));*//*
       }
-    });
+    });*/
     /*if(user!=null){
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (BuildContext context) => HomePage()));

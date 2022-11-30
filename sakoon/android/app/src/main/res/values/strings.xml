@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Sukoon</string>
-    <string name="facebook_app_id">2856991374542486</string>
-    <string name="fb_login_protocol_scheme">fb2856991374542486</string>
+    <string name="facebook_app_id">666280578453877</string>
+    <string name="fb_login_protocol_scheme">fb666280578453877</string>
+    <string name="facebook_client_token">71e221d001ffed9a030ceaf85e6aee45</string>
 </resources>

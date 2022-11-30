@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sakoon/components/custom_surfix_icon.dart';
 import 'package:sakoon/components/default_button.dart';
@@ -5,6 +6,7 @@ import 'package:sakoon/components/form_error.dart';
 import 'package:sakoon/components/no_account_text.dart';
 import 'package:sakoon/data/size_config.dart';
 
+import '../../../dailogs/custom_alert_dialogs.dart';
 import '../../../data/constants.dart';
 
 class Body extends StatelessWidget {
@@ -48,8 +50,8 @@ class ForgotPassForm extends StatefulWidget {
 
 class _ForgotPassFormState extends State<ForgotPassForm> {
   final _formKey = GlobalKey<FormState>();
-  List<String> errors = [];
-  String email;
+
+  var _emailController=TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -58,30 +60,10 @@ class _ForgotPassFormState extends State<ForgotPassForm> {
         children: [
           TextFormField(
             keyboardType: TextInputType.emailAddress,
-            onSaved: (newValue) => email = newValue,
-            onChanged: (value) {
-              if (value.isNotEmpty && errors.contains(kEmailNullError)) {
-                setState(() {
-                  errors.remove(kEmailNullError);
-                });
-              } else if (emailValidatorRegExp.hasMatch(value) &&
-                  errors.contains(kInvalidEmailError)) {
-                setState(() {
-                  errors.remove(kInvalidEmailError);
-                });
-              }
-              return null;
-            },
+           controller: _emailController,
             validator: (value) {
-              if (value.isEmpty && !errors.contains(kEmailNullError)) {
-                setState(() {
-                  errors.add(kEmailNullError);
-                });
-              } else if (!emailValidatorRegExp.hasMatch(value) &&
-                  !errors.contains(kInvalidEmailError)) {
-                setState(() {
-                  errors.add(kInvalidEmailError);
-                });
+              if (value == null || value.isEmpty) {
+                return 'Please enter some text';
               }
               return null;
             },
@@ -94,13 +76,16 @@ class _ForgotPassFormState extends State<ForgotPassForm> {
             ),
           ),
           SizedBox(height: getProportionateScreenHeight(30)),
-          FormError(errors: errors),
           SizedBox(height: SizeConfig.screenHeight * 0.1),
           DefaultButton(
             text: "Continue",
-            press: () {
+            press: () async{
               if (_formKey.currentState.validate()) {
-                // Do what you want to do
+                await FirebaseAuth.instance.sendPasswordResetEmail(email: _emailController.text.trim()).then((value){
+                  CustomAlertDialogs.showSuccessDialog(context,'Check your email for reset link');
+                }).onError((error, stackTrace){
+                  CustomAlertDialogs.showFailuresDailog(context,error.toString());
+                });
               }
             },
           ),

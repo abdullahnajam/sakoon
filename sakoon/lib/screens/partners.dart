@@ -13,26 +13,21 @@ class Partners extends StatefulWidget {
 class _PartnersState extends State<Partners> {
 
   Future<List<PartnerModel>> getPartnersList() async {
-    List<PartnerModel> list=new List();
-    final databaseReference = FirebaseDatabase.instance.reference();
-    await databaseReference.child("partners").once().then((DataSnapshot dataSnapshot){
+    List<PartnerModel> list=[];
+    final ref = FirebaseDatabase.instance.ref("partners");
+    DatabaseEvent event = await ref.once();
+    if(event.snapshot.value!=null){
+      Map<dynamic, dynamic> values = event.snapshot.value;
+      values.forEach((key, values) {
+        PartnerModel partnerModel=PartnerModel(
+          key,
+          values['name'],
+          values['url'],
+        );
+        list.add(partnerModel);
+      });
+    }
 
-      if(dataSnapshot.value!=null){
-        var KEYS= dataSnapshot.value.keys;
-        var DATA=dataSnapshot.value;
-
-        for(var individualKey in KEYS) {
-          PartnerModel partnerModel = new PartnerModel(
-            individualKey,
-            DATA[individualKey]['name'],
-            DATA[individualKey]['url'],
-          );
-          print("key ${partnerModel.id}");
-          list.add(partnerModel);
-
-        }
-      }
-    });
     return list;
   }
 

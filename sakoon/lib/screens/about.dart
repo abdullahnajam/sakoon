@@ -68,19 +68,20 @@ class _AboutUsState extends State<AboutUs> {
                       SizedBox(height: 5,),
                       Container(
                         padding: EdgeInsets.all(5),
-                        child: Text('Due to Pandemic . many of the Workers who supply things and do Maintenance at your homes are jobless. So to provide them Work , we are introducing this Sukoon app which will also help you to get in touch with one of the best workers and vendors who will provide you the work and maintenance of any type you need. If you want something to be supplied at your home. Sukoon is here for you.'),
+                        child: Text('Sukoon is a well-established company that provides you all kinds of products and services like providing and fixing Glass, packing and moving, construction, Property, UPVC and Aluminium, wood works and maintenance services of home appliance, Aluminium, Stainless Steel and UPVC and interior works. Working since the last 4 years, the company although yough has mounted massive experience in the relative field by working with big names in the construction industry.'),
                       ),
-                      Container(
-                        padding: EdgeInsets.all(5),
-                        child: Text('Sukoon.PVT LTD is a well-established company that provides services, maintenance and supply of all kinds of local & imported Glass, Aluminum, Stainless Steel, wood work, UPVC, Electric work, plumbing work . '),
-                      ),
+
                       Container(
                         child: Text('Our Values',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.black),),
                       ),
                       SizedBox(height: 5,),
                       Container(
+                        padding: EdgeInsets.all(5),
+                        child: Text('Sukoon has clearly enunciated its corporate values and uses this charter in its day to day conduct of business as governing principles of behavior, attitude and actions. The matrix of values is derived from:'),
+                      ),
+                      Container(
                           padding: EdgeInsets.all(5),
-                          child: Text('Customer Satisfaction')
+                          child: Text('Customer Focus')
                       ),
                       Container(
                           padding: EdgeInsets.all(5),
@@ -96,6 +97,10 @@ class _AboutUsState extends State<AboutUs> {
                       ),
                       Container(
                           padding: EdgeInsets.all(5),
+                          child: Text('Environmental Protection')
+                      ),
+                      Container(
+                          padding: EdgeInsets.all(5),
                           child: Text('Human Resource Development')
                       ),
                       Container(
@@ -103,62 +108,44 @@ class _AboutUsState extends State<AboutUs> {
                       ),
                       Container(
                           padding: EdgeInsets.all(5),
-                          child: Text('Sukoon will maintain ethical integrity in all business dealings while striving to become the best supplier of quality products along with superior services to all customers and industries we may serve. We aspire to have a safe environment while promoting positive values and work ethics, competitive employment opportunities.')
+                          child: Text('Sukoon will maintain ethical integrity in all business dealings while striving to become the best supplie of quality products along with superior services to all customers and industries we may serve. We asprire to have a safe environment while promoting positive values and work ethics, competitive employment opportunities.')
                       ),
                       Container(
                         child: Text('Our Supply and Services',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.black),),
                       ),
                       Container(
                           padding: EdgeInsets.all(5),
-                          child: Text('Wood')
+                          child: Text('Property')
                       ),
                       Container(
                           padding: EdgeInsets.all(5),
-                          child: Text('Aluminium')
+                          child: Text('Glass & Aluminium')
                       ),
                       Container(
                           padding: EdgeInsets.all(5),
-                          child: Text('Glass')
+                          child: Text('Architecture Consultancy')
                       ),
                       Container(
                           padding: EdgeInsets.all(5),
-                          child: Text('Plaster of Paris')
+                          child: Text('Interior & Exterior Designing')
                       ),
                       Container(
                           padding: EdgeInsets.all(5),
-                          child: Text('Structure')
+                          child: Text('Packing & Moving')
                       ),
                       Container(
                           padding: EdgeInsets.all(5),
-                          child: Text('Electrical Work')
+                          child: Text('Home Appliances Maintenance')
                       ),
+
                       Container(
                           padding: EdgeInsets.all(5),
-                          child: Text('Marble')
+                          child: Text('Fresh work')
                       ),
+
                       Container(
                           padding: EdgeInsets.all(5),
-                          child: Text('Air Conditioner')
-                      ),
-                      Container(
-                          padding: EdgeInsets.all(5),
-                          child: Text('Solar work')
-                      ),
-                      Container(
-                          padding: EdgeInsets.all(5),
-                          child: Text('Steel Work')
-                      ),
-                      Container(
-                          padding: EdgeInsets.all(5),
-                          child: Text('Plumbing work')
-                      ),
-                      Container(
-                          padding: EdgeInsets.all(5),
-                          child: Text('Paint work')
-                      ),
-                      Container(
-                          padding: EdgeInsets.all(5),
-                          child: Text('Supply')
+                          child: Text('Construction')
                       ),
                       SizedBox(height: 10,),
                       Container(
@@ -177,7 +164,7 @@ class _AboutUsState extends State<AboutUs> {
                               children: [
                                 Icon(Icons.email_outlined,color: Colors.white),
                                 SizedBox(width: 10,),
-                                Text("deenenterprises252@gmail.com",style: TextStyle(color: Colors.white),),
+                                Text("sukoon.business@gmail.com",style: TextStyle(color: Colors.white),),
                               ],
                             ),
                             SizedBox(height: 5,),
@@ -185,7 +172,15 @@ class _AboutUsState extends State<AboutUs> {
                               children: [
                                 Icon(Icons.phone_outlined,color: Colors.white),
                                 SizedBox(width: 10,),
-                                Text("03045306074",style: TextStyle(color: Colors.white)),
+                                Text("03021030303",style: TextStyle(color: Colors.white)),
+                              ],
+                            ),
+                            SizedBox(height: 5,),
+                            Row(
+                              children: [
+                                Icon(Icons.phone_outlined,color: Colors.white),
+                                SizedBox(width: 10,),
+                                Text("03195206631",style: TextStyle(color: Colors.white)),
                               ],
                             ),
                             SizedBox(height: 5,),

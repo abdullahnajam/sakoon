@@ -14,29 +14,24 @@ class Projects extends StatefulWidget {
 
 class _ProjectsState extends State<Projects> {
   final PageController pageController=PageController(initialPage: 0);
-  List<ProjectModel> piclist=new List();
+  List<ProjectModel> piclist=[];
   Future<List<ProjectModel>> getPartnersList() async {
-    List<ProjectModel> list=new List();
-    final databaseReference = FirebaseDatabase.instance.reference();
-    await databaseReference.child("projects").once().then((DataSnapshot dataSnapshot){
+    List<ProjectModel> list=[];
+    final ref = FirebaseDatabase.instance.ref("projects");
+    DatabaseEvent event = await ref.once();
+    if(event.snapshot.value!=null){
+      Map<dynamic, dynamic> values = event.snapshot.value;
+      values.forEach((key, values) {
+        ProjectModel projectModel=ProjectModel(
+          key,
+          values['url'],
+          values['name'],
+        );
+        list.add(projectModel);
+        piclist.add(projectModel);
+      });
+    }
 
-      if(dataSnapshot.value!=null){
-        var KEYS= dataSnapshot.value.keys;
-        var DATA=dataSnapshot.value;
-
-        for(var individualKey in KEYS) {
-          ProjectModel projectModel = new ProjectModel(
-            individualKey,
-            DATA[individualKey]['url'],
-            DATA[individualKey]['name'],
-          );
-          print("key ${projectModel.id}");
-          list.add(projectModel);
-          piclist.add(projectModel);
-
-        }
-      }
-    });
     return list;
   }
 

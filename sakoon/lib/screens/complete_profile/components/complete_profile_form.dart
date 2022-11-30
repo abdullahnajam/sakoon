@@ -1,13 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:google_map_location_picker/google_map_location_picker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sakoon/components/custom_surfix_icon.dart';
 import 'package:sakoon/components/default_button.dart';
 import 'package:sakoon/components/form_error.dart';
 import 'package:sakoon/screens/home/homePage.dart';
 
+import '../../../api/location.dart';
+import '../../../dailogs/custom_alert_dialogs.dart';
 import '../../../data/constants.dart';
 import '../../../data/size_config.dart';
 
@@ -19,62 +22,36 @@ class CompleteProfileForm extends StatefulWidget {
 }
 
 class _CompleteProfileFormState extends State<CompleteProfileForm> {
-  final _formKey = GlobalKey<FormState>();
-  final List<String> errors = [];
+
   String firstName;
   String lastName;
   String phoneNumber;
   String address;
+  final _formKey = GlobalKey<FormState>();
   var addressController=TextEditingController();
   var fnController=TextEditingController();
   var lnController=TextEditingController();
   var pnController=TextEditingController();
 
-  void addError({String error}) {
-    if (!errors.contains(error))
-      setState(() {
-        errors.add(error);
-      });
-  }
-
-  void removeError({String error}) {
-    if (errors.contains(error))
-      setState(() {
-        errors.remove(error);
-      });
-  }
 
   saveInfo() async{
-    final scaffold = Scaffold.of(context);
-    /*final GoogleSignInAccount googleUser = await GoogleSignIn;
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;*/
     User user=FirebaseAuth.instance.currentUser;
     print(phoneNumber);
     final databaseReference = FirebaseDatabase.instance.reference();
     databaseReference.child("user").child(user.uid).set({
       'address': addressController.text,
-      'email': user.email,
+      'email': user.providerData.first.email,
       'firstName': fnController.text,
       'lastName': lnController.text,
       'phoneNumber': pnController.text,
     }).then((value) {
-      scaffold.showSnackBar(
-        SnackBar(
-          content: const Text('Profile Updated'),
-        ),
-      );
+
       Navigator.pushReplacement(context, new MaterialPageRoute(
           builder: (context) => HomePage()));
     })
         .catchError((error, stackTrace) {
       print("inner: $error");
-      // although `throw SecondError()` has the same effect.
-      return scaffold.showSnackBar(
-        SnackBar(
-          content: Text('Error : $error'),
-        ),
-      );
+      CustomAlertDialogs.showFailuresDailog(context, error.toString());
     });
   }
 
@@ -91,15 +68,12 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
           buildPhoneNumberFormField(),
           SizedBox(height: getProportionateScreenHeight(30)),
           buildAddressFormField(),
-          FormError(errors: errors),
           SizedBox(height: getProportionateScreenHeight(60)),
           DefaultButton(
             text: "continue",
             press: () {
               if (_formKey.currentState.validate()) {
-                //Navigator.pushNamed(context, HomePage.routename);
-                Navigator.pushNamed(context, HomePage.routename);
-                //FocusScope.of(context).unfocus();
+
                 saveInfo();
               }
             },
@@ -113,28 +87,28 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
     return TextFormField(
       readOnly: true,
       onTap: () async {
-        LocationResult result = await showLocationPicker(
+        List coordinates=await getUserCurrentCoordinates();
+        Navigator.push(
           context,
-          kGoogleApiKey,
+          MaterialPageRoute(
+            builder: (context) => PlacePicker(
+              apiKey: kGoogleApiKey,
+              onPlacePicked: (result) {
+
+                addressController.text=result.formattedAddress;
+
+                Navigator.of(context).pop();
+              },
+              initialPosition: LatLng(coordinates[0], coordinates[1]),
+              useCurrentLocation: true,
+            ),
+          ),
         );
-        if(result!=null){
-          setState(() {
-            addressController.text=result.address;
-          });
-        }
       },
       controller: addressController,
-      onSaved: (newValue) => address = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty) {
-          removeError(error: kAddressNullError);
-        }
-        return null;
-      },
       validator: (value) {
-        if (value.isEmpty) {
-          addError(error: kAddressNullError);
-          return "";
+        if (value == null || value.isEmpty) {
+          return 'Please enter some text';
         }
         return null;
       },
@@ -175,17 +149,9 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
     return TextFormField(
       controller: pnController,
       keyboardType: TextInputType.phone,
-      onSaved: (newValue) => phoneNumber = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty) {
-          removeError(error: kPhoneNumberNullError);
-        }
-        return null;
-      },
       validator: (value) {
-        if (value.isEmpty) {
-          addError(error: kPhoneNumberNullError);
-          return "";
+        if (value == null || value.isEmpty) {
+          return 'Please enter some text';
         }
         return null;
       },
@@ -225,7 +191,12 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
   TextFormField buildLastNameFormField() {
     return TextFormField(
       controller: lnController,
-      onSaved: (newValue) => lastName = newValue,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter some text';
+        }
+        return null;
+      },
       decoration: InputDecoration(
         contentPadding: EdgeInsets.all(15),
         focusedBorder: OutlineInputBorder(
@@ -262,17 +233,9 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
   TextFormField buildFirstNameFormField() {
     return TextFormField(
       controller: fnController,
-      onSaved: (newValue) => firstName = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty) {
-          removeError(error: kNamelNullError);
-        }
-        return null;
-      },
       validator: (value) {
-        if (value.isEmpty) {
-          addError(error: kNamelNullError);
-          return "";
+        if (value == null || value.isEmpty) {
+          return 'Please enter some text';
         }
         return null;
       },

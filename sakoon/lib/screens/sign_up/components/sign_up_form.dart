@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sakoon/components/custom_surfix_icon.dart';
 import 'package:sakoon/components/default_button.dart';
 import 'package:sakoon/components/form_error.dart';
+import 'package:sakoon/dailogs/custom_alert_dialogs.dart';
 import 'package:sakoon/screens/complete_profile/complete_profile_screen.dart';
 
 import '../../../data/constants.dart';
@@ -16,24 +17,9 @@ class SignUpForm extends StatefulWidget {
 
 class _SignUpFormState extends State<SignUpForm> {
   final _formKey = GlobalKey<FormState>();
-  String email;
-  String password;
-  String conform_password;
-  bool remember = false;
-  final List<String> errors = [];
-  void addError({String error}) {
-    if (!errors.contains(error))
-      setState(() {
-        errors.add(error);
-      });
-  }
-
-  void removeError({String error}) {
-    if (errors.contains(error))
-      setState(() {
-        errors.remove(error);
-      });
-  }
+  var _emailController=TextEditingController();
+  var _passwordController=TextEditingController();
+  var _confirmPasswordController=TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -46,39 +32,41 @@ class _SignUpFormState extends State<SignUpForm> {
           buildPasswordFormField(),
           SizedBox(height: getProportionateScreenHeight(30)),
           buildConformPassFormField(),
-          FormError(errors: errors),
           SizedBox(height: getProportionateScreenHeight(50)),
           DefaultButton(
             text: "Continue",
             press: () async{
               if (_formKey.currentState.validate()) {
-                _formKey.currentState.save();
-                // if all are valid then go to success screen
-                try {
-                  UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                      email: email,
-                      password: password
-                  ).whenComplete(() {
-                    FirebaseAuth.instance
-                        .authStateChanges()
-                        .listen((User user) {
-                      if (user == null) {
-                        print('User is currently signed out!');
-                      } else {
-                        print('User is signed in!');
-                        Navigator.pushReplacement(
-                            context, MaterialPageRoute(builder: (BuildContext context) => CompleteProfileScreen()));
-                      }
-                    });
-                  });
-                } on FirebaseAuthException catch (e) {
-                  if (e.code == 'weak-password') {
-                    print('The password provided is too weak.');
-                  } else if (e.code == 'email-already-in-use') {
-                    print('The account already exists for that email.');
+                if(_passwordController.text==_confirmPasswordController.text){
+                  try {
+                    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                        email: _emailController.text.trim(),
+                        password: _passwordController.text
+                    );
+                    if(FirebaseAuth.instance.currentUser!=null){
+                      print('success uid:${FirebaseAuth.instance.currentUser.uid}');
+                      Navigator.pushReplacement(
+                          context, MaterialPageRoute(builder: (BuildContext context) => CompleteProfileScreen()));
+                    }
+                    else{
+                      print('user not logged in');
+                    }
+                  } on FirebaseAuthException catch (e) {
+                    if (e.code == 'weak-password') {
+                      CustomAlertDialogs.showFailuresDailog(context, 'Password must be at least 6 characters');
+                    } else if (e.code == 'email-already-in-use') {
+                      CustomAlertDialogs.showFailuresDailog(context, 'The account already exists for that email.');
+                      print('The account already exists for that email.');
+                    }
+                    else{
+                      CustomAlertDialogs.showFailuresDailog(context, e.toString());
+                    }
+                  } catch (e) {
+                    CustomAlertDialogs.showFailuresDailog(context, e.toString());
                   }
-                } catch (e) {
-                  print(e);
+                }
+                else{
+                  CustomAlertDialogs.showFailuresDailog(context, 'Password donot match');
                 }
                 //Navigator.pushNamed(context, CompleteProfileScreen.routeName);
               }
@@ -92,22 +80,10 @@ class _SignUpFormState extends State<SignUpForm> {
   TextFormField buildConformPassFormField() {
     return TextFormField(
       obscureText: true,
-      onSaved: (newValue) => conform_password = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty) {
-          removeError(error: kPassNullError);
-        } else if (value.isNotEmpty && password == conform_password) {
-          removeError(error: kMatchPassError);
-        }
-        conform_password = value;
-      },
+      controller: _confirmPasswordController,
       validator: (value) {
-        if (value.isEmpty) {
-          addError(error: kPassNullError);
-          return "";
-        } else if ((password != value)) {
-          addError(error: kMatchPassError);
-          return "";
+        if (value == null || value.isEmpty) {
+          return 'Please enter some text';
         }
         return null;
       },
@@ -147,22 +123,10 @@ class _SignUpFormState extends State<SignUpForm> {
   TextFormField buildPasswordFormField() {
     return TextFormField(
       obscureText: true,
-      onSaved: (newValue) => password = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty) {
-          removeError(error: kPassNullError);
-        } else if (value.length >= 8) {
-          removeError(error: kShortPassError);
-        }
-        password = value;
-      },
+      controller: _passwordController,
       validator: (value) {
-        if (value.isEmpty) {
-          addError(error: kPassNullError);
-          return "";
-        } else if (value.length < 8) {
-          addError(error: kShortPassError);
-          return "";
+        if (value == null || value.isEmpty) {
+          return 'Please enter some text';
         }
         return null;
       },
@@ -202,22 +166,10 @@ class _SignUpFormState extends State<SignUpForm> {
   TextFormField buildEmailFormField() {
     return TextFormField(
       keyboardType: TextInputType.emailAddress,
-      onSaved: (newValue) => email = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty) {
-          removeError(error: kEmailNullError);
-        } else if (emailValidatorRegExp.hasMatch(value)) {
-          removeError(error: kInvalidEmailError);
-        }
-        return null;
-      },
+      controller: _emailController,
       validator: (value) {
-        if (value.isEmpty) {
-          addError(error: kEmailNullError);
-          return "";
-        } else if (!emailValidatorRegExp.hasMatch(value)) {
-          addError(error: kInvalidEmailError);
-          return "";
+        if (value == null || value.isEmpty) {
+          return 'Please enter some text';
         }
         return null;
       },
