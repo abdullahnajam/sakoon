@@ -1,0 +1,162 @@
+{
+  "project_info": {
+    "project_number": "1000174164852",
+    "firebase_url": "https://sakoon-3904a-default-rtdb.firebaseio.com",
+    "project_id": "sakoon-3904a",
+    "storage_bucket": "sakoon-3904a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1000174164852:android:ec8da5ba5976f7b16e6a21",
+        "android_client_info": {
+          "package_name": "com.app.sakoon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1000174164852-1plh4n7t61iga1uih8k8744khbuej4ns.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.sakoon",
+            "certificate_hash": "3fc38bdbc6062674e71e6e58ff827083d1671963"
+          }
+        },
+        {
+          "client_id": "1000174164852-3nbjd1k39m00h3sffshmjiqun5r4tlkf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.sakoon",
+            "certificate_hash": "10078683f7dcd4cd8d017bbfa5552a12e0391294"
+          }
+        },
+        {
+          "client_id": "1000174164852-k30fjj9os8rnu7n8abm131kfohoc4tf2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.sakoon",
+            "certificate_hash": "4c5677787f04e9fa863dd89dabfb1bc57fe2eca2"
+          }
+        },
+        {
+          "client_id": "1000174164852-f07fbqk1k1ilt016cugebjhanv5se5a6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJW7hGQAOB8SKiYz1zdoG2lhk-DZCutC8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1000174164852-f07fbqk1k1ilt016cugebjhanv5se5a6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1000174164852:android:5ec9345f05966c376e6a21",
+        "android_client_info": {
+          "package_name": "com.app.sukoon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1000174164852-5hotepe5lalggc4392ej9te5ohrhbphs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.sukoon",
+            "certificate_hash": "10078683f7dcd4cd8d017bbfa5552a12e0391294"
+          }
+        },
+        {
+          "client_id": "1000174164852-f07fbqk1k1ilt016cugebjhanv5se5a6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJW7hGQAOB8SKiYz1zdoG2lhk-DZCutC8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1000174164852-f07fbqk1k1ilt016cugebjhanv5se5a6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1000174164852:android:e2257f3d2997a1316e6a21",
+        "android_client_info": {
+          "package_name": "com.deen.sakoon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1000174164852-41hkeaeknfkp6qpp1oqpcstnc0d788e8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.deen.sakoon",
+            "certificate_hash": "4c5677787f04e9fa863dd89dabfb1bc57fe2eca2"
+          }
+        },
+        {
+          "client_id": "1000174164852-oe392639kvsgtibt92c2durq6hb6h8rc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.deen.sakoon",
+            "certificate_hash": "10078683f7dcd4cd8d017bbfa5552a12e0391294"
+          }
+        },
+        {
+          "client_id": "1000174164852-plo9m7ugst5p82g5tohadq97f44prao6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.deen.sakoon",
+            "certificate_hash": "c3690e554adbd54054df78343e91be10284f67ee"
+          }
+        },
+        {
+          "client_id": "1000174164852-t544mdl44phseaqv1tfko6honnoh7vbd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.deen.sakoon",
+            "certificate_hash": "3fc38bdbc6062674e71e6e58ff827083d1671963"
+          }
+        },
+        {
+          "client_id": "1000174164852-f07fbqk1k1ilt016cugebjhanv5se5a6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJW7hGQAOB8SKiYz1zdoG2lhk-DZCutC8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1000174164852-f07fbqk1k1ilt016cugebjhanv5se5a6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

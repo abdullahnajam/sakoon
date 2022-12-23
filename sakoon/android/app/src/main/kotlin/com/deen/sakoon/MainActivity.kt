@@ -1,4 +1,4 @@
-package com.app.sakoon
+package com.deen.sakoon
 
 import io.flutter.embedding.android.FlutterActivity
 
